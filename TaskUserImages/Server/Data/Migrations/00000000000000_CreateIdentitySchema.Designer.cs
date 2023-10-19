@@ -9,7 +9,7 @@ using TaskUserImages.Server.Data;
 
 namespace TaskUserImages.Server.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(AuthDbContext))]
     [Migration("00000000000000_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {
