@@ -9,7 +9,7 @@ namespace TaskUserImages.Server.Data
     public class AuthDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
         public AuthDbContext(
-            DbContextOptions options,
+            DbContextOptions<AuthDbContext> options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
