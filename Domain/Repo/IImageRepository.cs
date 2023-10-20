@@ -1,10 +1,11 @@
-﻿using Domain.Entities;
+﻿using Ardalis.Result;
+using Domain.Entities;
 
 namespace Domain.Repo
 {
     public interface IImageRepository
     {
-        Task<Image?> GetByIdAsync(ImageId id);
-        Task<ImageId> Save(Image entity, CancellationToken cancellationToken = default);
+        Task<Result<Image>> GetByIdAsync(ImageId id);
+        Task<Result> Insert(Image entity, CancellationToken cancellationToken = default);
     }
 }

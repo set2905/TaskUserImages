@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Persistence\Persistence.csproj" />
+    <ProjectReference Include="..\..\Services\Services.csproj" />
     <ProjectReference Include="..\Client\TaskUserImages.Client.csproj" />
     <ProjectReference Include="..\Shared\TaskUserImages.Shared.csproj" />
   </ItemGroup>

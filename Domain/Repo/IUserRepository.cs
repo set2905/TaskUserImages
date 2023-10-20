@@ -1,12 +1,12 @@
-﻿using Domain.Entities;
+﻿using Ardalis.Result;
+using Domain.Entities;
 
 namespace Domain.Repo
 {
     public interface IUserRepository
     {
+        Task<Result<User>> GetByIdAsync(UserId id);
 
-        Task<User?> GetByIdAsync(UserId id);
-
-        Task<UserId> Save(User entity, CancellationToken cancellationToken = default);
+        Task<Result> Insert(User entity, CancellationToken cancellationToken = default);
     }
 }

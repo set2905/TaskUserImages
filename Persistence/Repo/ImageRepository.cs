@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Ardalis.Result;
+using Domain.Entities;
 using Domain.Repo;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,12 +11,12 @@ namespace Persistence.Repo
         {
         }
 
-        public override Task<Image?> GetByIdAsync(ImageId id)
+        public override Task<Result<Image>> GetByIdAsync(ImageId id)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<ImageId> Save(Image entity, CancellationToken cancellationToken = default)
+        public override Task<Result> Insert(Image entity, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

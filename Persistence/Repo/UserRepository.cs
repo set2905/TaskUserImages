@@ -1,6 +1,9 @@
-﻿using Domain.Entities;
+﻿using Ardalis.Result;
+using Domain.Entities;
 using Domain.Repo;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Xml.Linq;
 
 namespace Persistence.Repo
 {
@@ -10,14 +13,19 @@ namespace Persistence.Repo
         {
         }
 
-        public override Task<User?> GetByIdAsync(UserId id)
+        public override Task<Result<User>> GetByIdAsync(UserId id)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<UserId> Save(User entity, CancellationToken cancellationToken = default)
+        public override async Task<Result> Insert(User entity, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            using (var context = contextFactory.CreateDbContext())
+            {
+                context.Entry(entity).State = EntityState.Added;
+                await context.SaveChangesAsync(cancellationToken);
+                return Result.Success();
+            }
         }
     }
 }

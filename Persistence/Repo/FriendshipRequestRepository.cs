@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Ardalis.Result;
+using Domain.Entities;
 using Domain.Repo;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,17 +12,17 @@ namespace Persistence.Repo
         {
         }
 
-        public Task<bool> CheckForPendingFriendshipRequestAsync(User user, User friend)
+        public Task<Result<bool>> CheckForPendingFriendshipRequestAsync(User user, User friend)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<FriendshipRequest?> GetByIdAsync(FriendshipRequestId id)
+        public override Task<Result<FriendshipRequest>> GetByIdAsync(FriendshipRequestId id)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<FriendshipRequestId> Save(FriendshipRequest entity, CancellationToken cancellationToken = default)
+        public override Task<Result> Insert(FriendshipRequest entity, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

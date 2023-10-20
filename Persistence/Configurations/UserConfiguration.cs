@@ -18,6 +18,10 @@ namespace Persistence.Configurations
                    .HasForeignKey(img => img.UserId)
                    .IsRequired();
 
+            builder.HasMany(u => u.FriendsTo)
+                   .WithMany(u => u.FriendsWith)
+                   .UsingEntity(join => join.ToTable("Friendships")); ;
+
             builder.HasIndex(u => u.UserName)
                    .IsUnique();
         }

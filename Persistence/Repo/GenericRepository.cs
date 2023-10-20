@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Ardalis.Result;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Persistence.Repo
 {
@@ -15,21 +17,21 @@ namespace Persistence.Repo
         {
             this.contextFactory=contextFactory;
         }
-        public virtual async Task<bool> Delete(TEntity entity, CancellationToken cancellationToken = default)
+        public virtual async Task<Result> Delete(TEntity entity, CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())
             {
                 context.Set<TEntity>().Remove(entity);
                 await context.SaveChangesAsync(cancellationToken);
-                return true;
+                return Result.Success();
             }
         }
         /// <summary>
         /// Gets the entity with the specified identifier.
         /// </summary>
         /// <param name="id">The entity identifier.</param>
-        public abstract Task<TEntity?> GetByIdAsync(TId id);
+        public abstract Task<Result<TEntity>> GetByIdAsync(TId id);
 
-        public abstract Task<TId> Save(TEntity entity, CancellationToken cancellationToken = default);
+        public abstract Task<Result> Insert(TEntity entity, CancellationToken cancellationToken = default);
     }
 }

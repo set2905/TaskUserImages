@@ -3,13 +3,15 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Persistence;
+using Services;
 using TaskUserImages.Server.Data;
 using Microsoft.AspNetCore.Identity;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddPersistence(builder.Configuration)
+                .AddServices();
 
 // Add services to the container.
 var authConnectionString = builder.Configuration.GetConnectionString("AuthConnection") ?? throw new InvalidOperationException("Connection string 'AuthConnection' not found.");
@@ -24,6 +26,18 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 builder.Services.AddIdentityServer()
     .AddApiAuthorization<ApplicationUser, AuthDbContext>();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.SignIn.RequireConfirmedAccount=false;
+    options.SignIn.RequireConfirmedEmail=false;
+    options.SignIn.RequireConfirmedPhoneNumber=false;
+});
 
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
