@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskUserImages.Client", "Ta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskUserImages.Shared", "TaskUserImages\Shared\TaskUserImages.Shared.csproj", "{81705F42-2920-4C8A-BF2E-8DBFA3AA3F43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{45840B4A-BB5A-4183-B8D1-7D910C7D8154}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{45840B4A-BB5A-4183-B8D1-7D910C7D8154}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\Persistence.csproj", "{0B77A02B-9C34-42F1-B0DE-E36FC8618438}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "Persistence\Persistence.csproj", "{0B77A02B-9C34-42F1-B0DE-E36FC8618438}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{C8845AF3-F240-428E-9FC1-6223DE313F0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{0B77A02B-9C34-42F1-B0DE-E36FC8618438}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B77A02B-9C34-42F1-B0DE-E36FC8618438}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B77A02B-9C34-42F1-B0DE-E36FC8618438}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8845AF3-F240-428E-9FC1-6223DE313F0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8845AF3-F240-428E-9FC1-6223DE313F0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8845AF3-F240-428E-9FC1-6223DE313F0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8845AF3-F240-428E-9FC1-6223DE313F0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

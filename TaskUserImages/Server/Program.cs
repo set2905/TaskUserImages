@@ -1,20 +1,21 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Persistence;
 using TaskUserImages.Server.Data;
+using Microsoft.AspNetCore.Identity;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddPersistence(builder.Configuration);
+
 // Add services to the container.
 var authConnectionString = builder.Configuration.GetConnectionString("AuthConnection") ?? throw new InvalidOperationException("Connection string 'AuthConnection' not found.");
-var mainConnectionString = builder.Configuration.GetConnectionString("MainConnection") ?? throw new InvalidOperationException("Connection string 'MainConnection' not found.");
 
 builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlServer(authConnectionString));
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(mainConnectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

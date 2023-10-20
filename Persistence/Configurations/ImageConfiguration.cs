@@ -6,6 +6,7 @@ namespace Persistence.Configurations
 {
     public class ImageConfiguration : IEntityTypeConfiguration<Image>
     {
+        /// <inheritdoc />
         public void Configure(EntityTypeBuilder<Image> builder)
         {
             builder.HasKey(i => i.Id);

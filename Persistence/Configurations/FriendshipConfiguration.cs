@@ -6,6 +6,7 @@ namespace Persistence.Configurations
 {
     public class FriendshipConfiguration : IEntityTypeConfiguration<Friendship>
     {
+        /// <inheritdoc />
         public void Configure(EntityTypeBuilder<Friendship> builder)
         {
             builder.HasKey(friendship => new

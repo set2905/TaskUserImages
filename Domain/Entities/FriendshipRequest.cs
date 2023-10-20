@@ -89,7 +89,7 @@ namespace Domain.Entities
         /// </summary>
         /// <param name="utcNow">The current date and time in UTC format.</param>
         /// <returns>The result of the rejecting operation.</returns>
-        public Result Reject(DateTime utcNow)
+        public Result Reject()
         {
             if (Accepted)
             {
