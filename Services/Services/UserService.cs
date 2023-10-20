@@ -18,5 +18,9 @@ namespace Services.Services
             User user = new(new(Guid.NewGuid()), userName);
             return await userRepository.Insert(user);
         }
+        public async Task<Result<List<User>>> GetUsers(int page, int pageSize)
+        {
+            return await userRepository.GetUsers(page, pageSize);
+        }
     }
 }

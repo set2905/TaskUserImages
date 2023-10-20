@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskUserImages.Server", "Ta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskUserImages.Client", "TaskUserImages\Client\TaskUserImages.Client.csproj", "{D16210D6-5A99-4480-AB99-D41A92489345}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskUserImages.Shared", "TaskUserImages\Shared\TaskUserImages.Shared.csproj", "{81705F42-2920-4C8A-BF2E-8DBFA3AA3F43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "TaskUserImages\Shared\Contracts.csproj", "{81705F42-2920-4C8A-BF2E-8DBFA3AA3F43}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{45840B4A-BB5A-4183-B8D1-7D910C7D8154}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "Persistence\Persistence.csproj", "{0B77A02B-9C34-42F1-B0DE-E36FC8618438}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{C8845AF3-F240-428E-9FC1-6223DE313F0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{C8845AF3-F240-428E-9FC1-6223DE313F0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

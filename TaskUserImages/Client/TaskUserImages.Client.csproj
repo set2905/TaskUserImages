@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\TaskUserImages.Shared.csproj" />
+    <ProjectReference Include="..\Shared\Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

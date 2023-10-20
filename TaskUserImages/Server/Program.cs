@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Persistence;
 using Services;
 using TaskUserImages.Server.Data;
 using Microsoft.AspNetCore.Identity;
+using AutoMapper;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,10 +39,12 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 builder.Services.AddAuthentication()
-    .AddIdentityServerJwt();
+.AddIdentityServerJwt();
 
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -52,6 +53,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
     app.UseWebAssemblyDebugging();
+
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
