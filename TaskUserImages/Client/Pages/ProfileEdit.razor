@@ -1,0 +1,45 @@
+﻿@page "/Profile/Edit"
+@using TaskUserImages.Client.API;
+@inject IImageFriendsAPI api
+
+<h3>ProfileEdit</h3>
+<MudFileUpload T="IReadOnlyList<IBrowserFile>" AppendMultipleFiles Accept=".png, .jpg" FilesChanged="UploadFiles">
+    <ButtonTemplate>
+        <MudButton HtmlTag="label"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                   for="@context">
+            Multiple Files
+        </MudButton>
+    </ButtonTemplate>
+</MudFileUpload>
+
+<MudButton OnClick="SendFilesToServer">Send</MudButton>
+
+
+@code {
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+
+    private void UploadFiles(IReadOnlyList<IBrowserFile> files)
+    {
+        foreach (var file in files)
+        {
+            this.files.Add(file);
+        }
+    }
+
+    //Лучше бы Task WhenAll?
+    private async Task SendFilesToServer()
+    {
+        foreach (var file in files)
+        {
+            using (Stream stream = file.OpenReadStream())
+            {
+                byte[] buffer = new byte[file.Size];
+                int length = await stream.ReadAsync(buffer);
+                await api.UploadImage(new(buffer));
+            }
+        }
+    }
+}

@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using Domain.Entities;
 using Domain.Repo;
+using Services.Services.Interfaces;
 
 namespace Services.Services
 {
@@ -13,14 +14,15 @@ namespace Services.Services
             this.userRepository=userRepository;
         }
 
-        public async Task<Result> CreateUser(string userName)
+        public async Task<Result> CreateUserProfile(string userName)
         {
             User user = new(new(Guid.NewGuid()), userName);
             return await userRepository.Insert(user);
         }
-        public async Task<Result<List<User>>> GetUsers(int page, int pageSize)
+        public async Task<Result<List<User>>> GetUserProfiles(int page, int pageSize)
         {
             return await userRepository.GetUsers(page, pageSize);
         }
+
     }
 }

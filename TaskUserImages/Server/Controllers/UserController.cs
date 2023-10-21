@@ -3,7 +3,7 @@ using Ardalis.Result.AspNetCore;
 using AutoMapper;
 using Contracts.Dto;
 using Microsoft.AspNetCore.Mvc;
-using Services.Services;
+using Services.Services.Interfaces;
 
 namespace TaskUserImages.Server.Controllers
 {
@@ -22,10 +22,10 @@ namespace TaskUserImages.Server.Controllers
 
         [TranslateResultToActionResult]
         [HttpGet]
-        [Route("GetUsers")]
+        [Route("GetUserProfiles")]
         public async Task<Result<List<UserDto>>> GetUsers(int page, int pageSize)
         {
-            return (await userService.GetUsers(page, pageSize)).Map(uli => uli.ConvertAll(u=>mapper.Map<UserDto>(u)));
+            return (await userService.GetUserProfiles(page, pageSize)).Map(uli => uli.ConvertAll(u=>mapper.Map<UserDto>(u)));
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Persistence.Repo;
 using Services.Services;
+using Services.Services.Interfaces;
 
 namespace Services
 {
@@ -9,6 +10,7 @@ namespace Services
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IImageService, ImageService>();
 
             return services;
         }

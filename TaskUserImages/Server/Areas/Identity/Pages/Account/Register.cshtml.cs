@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Services.Services;
+using Services.Services.Interfaces;
 using TaskUserImages.Server.Data;
 
 namespace TaskUserImages.Server.Areas.Identity.Pages.Account
@@ -123,7 +123,7 @@ namespace TaskUserImages.Server.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    Result userDataCreationResult = await _userService.CreateUser(user.UserName);
+                    Result userDataCreationResult = await _userService.CreateUserProfile(user.UserName);
                     if (userDataCreationResult.IsSuccess)
                         _logger.LogInformation($"New user profile data created. {userDataCreationResult.SuccessMessage}");
                     else
