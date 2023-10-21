@@ -15,12 +15,13 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddHttpClient("TaskUserImages.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
     .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
-//В другое место
 string apiUrl = $"{builder.HostEnvironment.BaseAddress}api";
-builder.Services.AddRefitClient<IImageFriendsAPI>().ConfigureHttpClient(c =>
-{
-    c.BaseAddress = new Uri(apiUrl);
-})
+builder.Services
+    .AddRefitClient<IImageFriendsAPI>().ConfigureHttpClient(c =>
+        {
+            c.BaseAddress = new Uri(apiUrl);
+        })
+    .AddHttpMessageHandler(sp => sp.GetRequiredService<BaseAddressAuthorizationMessageHandler>())
     .AddTransientHttpErrorPolicy(b => b.WaitAndRetryAsync(new[]
     {
                     TimeSpan.FromSeconds(1),

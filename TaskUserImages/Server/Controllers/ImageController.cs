@@ -1,8 +1,10 @@
 ﻿using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Contracts.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services.Interfaces;
+using System.Security.Claims;
 
 namespace TaskUserImages.Server.Controllers
 {
@@ -17,11 +19,14 @@ namespace TaskUserImages.Server.Controllers
             this.imageService=imageService;
         }
 
+        [Authorize]
         [TranslateResultToActionResult]
         [HttpPost]
         [Route("Upload")]
         public async Task<Result> UploadImage(UploadedFile uploaded)
         {
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var path = $"C:\\Users\\user\\Downloads\\{Guid.NewGuid()}";
             using (FileStream fs = System.IO.File.Create(path))
             {
