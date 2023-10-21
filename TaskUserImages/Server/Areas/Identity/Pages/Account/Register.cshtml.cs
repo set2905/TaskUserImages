@@ -123,7 +123,7 @@ namespace TaskUserImages.Server.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    Result userDataCreationResult = await _userService.CreateUserProfile(user.UserName);
+                    Result userDataCreationResult = await _userService.CreateUserProfile(user.UserName, user.Id);
                     if (userDataCreationResult.IsSuccess)
                         _logger.LogInformation($"New user profile data created. {userDataCreationResult.SuccessMessage}");
                     else

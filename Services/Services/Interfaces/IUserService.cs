@@ -5,7 +5,7 @@ namespace Services.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<Result> CreateUserProfile(string userName);
+        Task<Result> CreateUserProfile(string userName, string id);
         Task<Result<List<User>>> GetUserProfiles(int page, int pageSize);
     }
 }

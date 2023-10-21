@@ -14,9 +14,9 @@ namespace Services.Services
             this.userRepository=userRepository;
         }
 
-        public async Task<Result> CreateUserProfile(string userName)
+        public async Task<Result> CreateUserProfile(string userName, string id)
         {
-            User user = new(new(Guid.NewGuid()), userName);
+            User user = new(new(Guid.NewGuid()), userName, id);
             return await userRepository.Insert(user);
         }
         public async Task<Result<List<User>>> GetUserProfiles(int page, int pageSize)

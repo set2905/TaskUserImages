@@ -8,11 +8,12 @@ namespace Domain.Entities
         private readonly HashSet<User> friendsWith = new();
         private readonly HashSet<User> friendsTo = new();
 
-        public User(UserId id, string userName)
+        public User(UserId id, string userName, string identityId)
         {
             Guard.Against.Default(id.Value, nameof(id), "The identifier is required.");
             Id=id;
-            UserName=userName;  
+            UserName=userName;
+            AspUserIdentity = identityId;
         }
 
         private User() { }
