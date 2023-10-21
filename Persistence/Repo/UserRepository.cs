@@ -50,9 +50,29 @@ namespace Persistence.Repo
         private List<ValidationError> GetValidationErrors(int page, int pageSize)
         {
             List<ValidationError> errors = new();
-            if (page < MIN_PAGESIZE) errors.Add(new() { ErrorMessage=$"Minimum page is {MIN_PAGESIZE}" });
-            if (pageSize < MIN_PAGE) errors.Add(new() { ErrorMessage=$"Minimum page size is {MIN_PAGE}" });
-            if (pageSize > MAX_PAGESIZE) errors.Add(new() { ErrorMessage=$"Maximum page size is {MAX_PAGESIZE}" });
+            if (page < MIN_PAGESIZE) errors.Add(new()
+            {
+                Identifier=nameof(page),
+                ErrorMessage=$"Minimum page is {MIN_PAGESIZE}",
+                Severity=ValidationSeverity.Error,
+                ErrorCode="400"
+                
+            });
+            if (pageSize < MIN_PAGE) errors.Add(new()
+            {
+                Identifier=nameof(page),
+                ErrorMessage=$"Minimum page size is {MIN_PAGE}",
+                Severity=ValidationSeverity.Error,
+                ErrorCode="400"
+
+            });
+            if (pageSize > MAX_PAGESIZE) errors.Add(new()
+            {
+                Identifier=nameof(pageSize),
+                ErrorMessage=$"Maximum page size is {MAX_PAGESIZE}",
+                Severity=ValidationSeverity.Error,
+                ErrorCode="400"
+            });
             return errors;
         }
 

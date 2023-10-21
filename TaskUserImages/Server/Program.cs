@@ -41,6 +41,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddAuthentication()
 .AddIdentityServerJwt();
 
+
+
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

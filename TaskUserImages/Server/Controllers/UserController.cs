@@ -2,7 +2,6 @@
 using Ardalis.Result.AspNetCore;
 using AutoMapper;
 using Contracts.Dto;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 

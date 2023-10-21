@@ -12,7 +12,7 @@ namespace Persistence.Repo
         {
         }
 
-        public Task<Result<bool>> CheckForPendingFriendshipRequestAsync(User user, User friend)
+        public Task<Result<bool>> CheckForPendingFriendshipRequestAsync(User from, User to)
         {
             throw new NotImplementedException();
         }
