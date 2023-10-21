@@ -19,6 +19,7 @@ namespace Domain.Entities
 
         public UserId Id { get; private set; }
         public string UserName { get; private set; }
+        public string AspUserIdentity { get; private set; }
         public IReadOnlyCollection<Image> Images => images;
         public IReadOnlyCollection<User> FriendsWith => friendsWith;
         public IReadOnlyCollection<User> FriendsTo => friendsTo;

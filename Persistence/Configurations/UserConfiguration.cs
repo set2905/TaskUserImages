@@ -20,9 +20,11 @@ namespace Persistence.Configurations
 
             builder.HasMany(u => u.FriendsTo)
                    .WithMany(u => u.FriendsWith)
-                   .UsingEntity(join => join.ToTable("Friendships")); ;
+                   .UsingEntity(join => join.ToTable("Friendships")); 
 
             builder.HasIndex(u => u.UserName)
+                   .IsUnique();
+            builder.HasIndex(u => u.AspUserIdentity)
                    .IsUnique();
         }
     }
