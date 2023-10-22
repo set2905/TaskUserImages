@@ -5,17 +5,20 @@
 @attribute [Authorize]
 
 <h3>ProfileEdit</h3>
-<MudFileUpload T="IReadOnlyList<IBrowserFile>" AppendMultipleFiles Accept=".png, .jpg" FilesChanged="UploadFiles">
+<MudFileUpload Accept=".jpg,.png,.jpeg" T="IReadOnlyList<IBrowserFile>" OnFilesChanged="UploadFiles" AppendMultipleFiles Hidden="false" Class="flex-1" InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20" InputStyle="opacity:0"
+@ondragenter="@SetDragClass" @ondragleave="@ClearDragClass" @ondragend="@ClearDragClass">
     <ButtonTemplate>
         <MudPaper Height="300px" Outlined="true" Class="@DragClass">
             <MudText Typo="Typo.h6">Drag file or click here</MudText>
             @foreach (var img in existingImages)
             {
-                <MudImage Height="100" Src="@img.Url" />
+                <MudImage Height="100" Src="@img" />
             }
         </MudPaper>
     </ButtonTemplate>
 </MudFileUpload>
+<MudImage Height="100" Src="https://localhost:7096/api/Image/Get?imageId=0DA7EEF6-4C56-4A1B-B662-A1E7DF1825DB" />
+
 
 <MudButton OnClick="SendFilesToServer">Send</MudButton>
 
@@ -24,20 +27,24 @@
     private static string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full z-10";
     private string DragClass = DefaultDragClass;
 
-    IList<IBrowserFile> files = new List<IBrowserFile>();
+    IList<IBrowserFile> allFiles = new List<IBrowserFile>();
+    private List<string> existingImages = new();
 
-    private void UploadFiles(IReadOnlyList<IBrowserFile> files)
+
+    private void UploadFiles(InputFileChangeEventArgs e)
     {
+        ClearDragClass();
+        var files = e.GetMultipleFiles();
         foreach (var file in files)
         {
-            this.files.Add(file);
+            this.allFiles.Add(file);
         }
     }
 
     //Лучше бы Task WhenAll?
     private async Task SendFilesToServer()
     {
-        foreach (var file in files)
+        foreach (var file in allFiles)
         {
             using (Stream stream = file.OpenReadStream())
             {
@@ -46,5 +53,15 @@
                 await api.UploadImage(new(buffer));
             }
         }
+    }
+
+    private void SetDragClass()
+    {
+        DragClass = $"{DefaultDragClass} mud-border-primary";
+    }
+
+    private void ClearDragClass()
+    {
+        DragClass = DefaultDragClass;
     }
 }

@@ -3,6 +3,7 @@ using Contracts.Dto;
 using Domain.Entities;
 using Domain.Repo;
 using FileSignatures;
+using Microsoft.AspNetCore.Mvc;
 using Services.Services.Interfaces;
 using System.IO;
 
@@ -25,10 +26,18 @@ namespace Services.Services
             this.fileFormatInspector=fileFormatInspector;
         }
 
+        public async Task<Result<string>> GetImageFilePath(ImageId id)
+        {
+            Result<Image> imageResult = await imgRepo.GetByIdAsync(id);
+            if (!imageResult.IsSuccess) return Result.Error("Couldnt get an image by provided id");
+            string path= Path.Combine(baseFilePath, $"{imageResult.Value.FileName}");
+            return path;
+        }
+
         public async Task<Result> UploadImage(string identityId, UploadedFile imageToUpload)
         {
             Result<User> userResult = await userProfileRepo.GetByIdentityAsync(identityId);
-            if (userResult.IsSuccess==false) 
+            if (userResult.IsSuccess==false)
                 return Result.NotFound($"User with identity {identityId} not found");
             ImageId imgId = new(Guid.NewGuid());
             Result<string> imageFileSaveResult = await SaveImageFile(imgId, imageToUpload.FileContent);
@@ -69,6 +78,7 @@ namespace Services.Services
             else
                 return Result.Error("Could not insert image path to the db");
         }
+
     }
 
 

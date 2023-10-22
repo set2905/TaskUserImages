@@ -9,5 +9,7 @@ namespace TaskUserImages.Client.API
         Task<List<UserDto>> GetUserProfiles(int page, int pageSize);
         [Post("/Image/Upload")]
         Task UploadImage(UploadedFile file);
+        [Post("/Image/Get")]
+        Task<object> GetImage(Guid id);
     }
 }

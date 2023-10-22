@@ -11,9 +11,15 @@ namespace Persistence.Repo
         {
         }
 
-        public override Task<Result<Image>> GetByIdAsync(ImageId id)
+        public override async Task<Result<Image>> GetByIdAsync(ImageId id)
         {
-            throw new NotImplementedException();
+            using (var context = contextFactory.CreateDbContext())
+            {
+                DbSet<Image> images = context.Set<Image>();
+                Image? result = await images.SingleOrDefaultAsync(x => x.Id == id);
+                if (result == null) return Result.NotFound($"Image with id {id.Value} is not found");
+                return Result.Success(result);
+            }
         }
 
 

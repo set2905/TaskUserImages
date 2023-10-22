@@ -31,5 +31,17 @@ namespace TaskUserImages.Server.Controllers
             return await imageService.UploadImage(userId, uploaded);
         }
 
+
+       // [Authorize]
+        [HttpGet]
+        [Route("Get")]
+        public async Task<IActionResult> GetImage(Guid imageId)
+        {
+            string contentType = "image/jpeg";
+            Result<string> pathResult = await imageService.GetImageFilePath(new(imageId));
+            if (!pathResult.IsSuccess) return BadRequest("Couldnt get image");
+            return PhysicalFile(pathResult.Value, contentType);
+        }
+
     }
 }
