@@ -26,14 +26,9 @@ namespace TaskUserImages.Server.Controllers
         public async Task<Result> UploadImage(UploadedFile uploaded)
         {
             string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Result.Error("User id could not be found");
 
-            var path = $"C:\\Users\\user\\Downloads\\{Guid.NewGuid()}";
-            using (FileStream fs = System.IO.File.Create(path))
-            {
-                await fs.WriteAsync(uploaded.FileContent, 0, uploaded.FileContent.Length);
-                fs.Close();
-            }
-            return Result.Success();
+            return await imageService.UploadImage(userId, uploaded);
         }
 
     }

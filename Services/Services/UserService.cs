@@ -7,9 +7,9 @@ namespace Services.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository userRepository;
+        private readonly IUserProfileRepository userRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserProfileRepository userRepository)
         {
             this.userRepository=userRepository;
         }
@@ -17,11 +17,11 @@ namespace Services.Services
         public async Task<Result> CreateUserProfile(string userName, string id)
         {
             User user = new(new(Guid.NewGuid()), userName, id);
-            return await userRepository.Insert(user);
+            return await userRepository.InsertAsync(user);
         }
         public async Task<Result<List<User>>> GetUserProfiles(int page, int pageSize)
         {
-            return await userRepository.GetUsers(page, pageSize);
+            return await userRepository.GetUsersAsync(page, pageSize);
         }
 
     }

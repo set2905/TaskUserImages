@@ -24,7 +24,7 @@ namespace Persistence
                 .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.DetachedLazyLoadingWarning)));
 
             services.AddScoped<IImageRepository, ImageRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserProfileRepository, UserRepository>();
             services.AddScoped<IFriendshipRequestRepository, FriendshipRequestRepository>();
 
             return services;

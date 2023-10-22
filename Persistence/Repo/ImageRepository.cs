@@ -16,9 +16,6 @@ namespace Persistence.Repo
             throw new NotImplementedException();
         }
 
-        public override Task<Result> Insert(Image entity, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

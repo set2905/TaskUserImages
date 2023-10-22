@@ -10,7 +10,7 @@ using AutoMapper;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPersistence(builder.Configuration)
-                .AddServices();
+                .AddServices(builder.Configuration);
 
 // Add services to the container.
 var authConnectionString = builder.Configuration.GetConnectionString("AuthConnection") ?? throw new InvalidOperationException("Connection string 'AuthConnection' not found.");
@@ -40,8 +40,6 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddAuthentication()
 .AddIdentityServerJwt();
-
-
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllersWithViews();

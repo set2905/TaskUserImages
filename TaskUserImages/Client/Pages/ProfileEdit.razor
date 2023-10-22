@@ -7,13 +7,13 @@
 <h3>ProfileEdit</h3>
 <MudFileUpload T="IReadOnlyList<IBrowserFile>" AppendMultipleFiles Accept=".png, .jpg" FilesChanged="UploadFiles">
     <ButtonTemplate>
-        <MudButton HtmlTag="label"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.CloudUpload"
-                   for="@context">
-            Multiple Files
-        </MudButton>
+        <MudPaper Height="300px" Outlined="true" Class="@DragClass">
+            <MudText Typo="Typo.h6">Drag file or click here</MudText>
+            @foreach (var img in existingImages)
+            {
+                <MudImage Height="100" Src="@img.Url" />
+            }
+        </MudPaper>
     </ButtonTemplate>
 </MudFileUpload>
 
@@ -21,6 +21,9 @@
 
 
 @code {
+    private static string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full z-10";
+    private string DragClass = DefaultDragClass;
+
     IList<IBrowserFile> files = new List<IBrowserFile>();
 
     private void UploadFiles(IReadOnlyList<IBrowserFile> files)

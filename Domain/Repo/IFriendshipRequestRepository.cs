@@ -14,7 +14,7 @@ namespace Domain.Repo
         Task<Result<bool>> CheckForPendingFriendshipRequestAsync(User user, User friend);
 
         Task<Result<FriendshipRequest>> GetByIdAsync(FriendshipRequestId id);
-        Task<Result> Insert(FriendshipRequest entity, CancellationToken cancellationToken = default);
+        Task<Result> InsertAsync(FriendshipRequest entity, CancellationToken cancellationToken = default);
 
     }
 }

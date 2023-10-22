@@ -32,6 +32,14 @@ namespace Persistence.Repo
         /// <param name="id">The entity identifier.</param>
         public abstract Task<Result<TEntity>> GetByIdAsync(TId id);
 
-        public abstract Task<Result> Insert(TEntity entity, CancellationToken cancellationToken = default);
+        public virtual async Task<Result> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                context.Entry(entity).State = EntityState.Added;
+                await context.SaveChangesAsync(cancellationToken);
+                return Result.Success();
+            }
+        }
     }
 }
