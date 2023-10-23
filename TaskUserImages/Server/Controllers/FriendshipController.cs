@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Services.Services.Interfaces;
 using System.Security.Claims;
+using AutoMapper;
 
 namespace TaskUserImages.Server.Controllers
 {
@@ -12,10 +13,13 @@ namespace TaskUserImages.Server.Controllers
     public class FriendshipController : ControllerBase
     {
         private readonly IFriendshipService friendshipService;
+        private readonly IMapper mapper;
 
-        public FriendshipController(IFriendshipService friendshipService)
+
+        public FriendshipController(IFriendshipService friendshipService, IMapper mapper)
         {
             this.friendshipService=friendshipService;
+            this.mapper=mapper;
         }
 
         [Authorize]

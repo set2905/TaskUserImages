@@ -1,13 +1,7 @@
 ﻿using Ardalis.Result;
 using Domain.Entities;
 using Domain.Repo;
-using Microsoft.EntityFrameworkCore.Internal;
 using Services.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Services
 {
@@ -58,6 +52,18 @@ namespace Services.Services
             Result<User> fromUserResult = await userProfileRepository.GetByIdAsync(from);
             Result<User> toUserResult = await userProfileRepository.GetByIdAsync(to);
             if (!fromUserResult.IsSuccess||!toUserResult.IsSuccess) return Result.NotFound("User not found");
+
+            Result<FriendshipRequest> incomingRequestResult = await friendshipRequestRepository.FindFriendRequestAsync(toUserResult.Value.Id,
+                                                                                           fromUserResult.Value.Id);
+            if (incomingRequestResult.IsSuccess)
+            {
+                incomingRequestResult.Value.Accept();
+                Result editResult = await friendshipRequestRepository.EditAsync(incomingRequestResult.Value);
+                if (editResult.IsSuccess)
+                    return Result.Success();
+                return Result.Error("Error accepting friend request");
+            }
+
             FriendshipRequest friendshipRequest = new(new(Guid.NewGuid()), fromUserResult.Value, toUserResult.Value);
             return await friendshipRequestRepository.InsertAsync(friendshipRequest);
         }

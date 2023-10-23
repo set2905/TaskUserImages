@@ -36,13 +36,13 @@ namespace Persistence.Repo
             }
         }
 
-        public async Task<Result<FriendshipRequest>> FindFriendRequest(UserId from, UserId to)
+        public async Task<Result<FriendshipRequest>> FindFriendRequestAsync(UserId from, UserId to)
         {
             using (var context = contextFactory.CreateDbContext())
             {
                 DbSet<FriendshipRequest> requests = context.Set<FriendshipRequest>();
                 var found = await requests.SingleOrDefaultAsync(x => x.UserId == from && x.FriendId == to);
-                if (found==null) return Result.NotFound("Friend request not found");
+                if (found==null) return Result.NotFound();
                 return Result.Success(found);
             }
         }

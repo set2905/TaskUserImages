@@ -41,5 +41,15 @@ namespace Persistence.Repo
                 return Result.Success();
             }
         }
+
+        public virtual async Task<Result> EditAsync(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                context.Entry(entity).State = EntityState.Modified;
+                await context.SaveChangesAsync(cancellationToken);
+                return Result.Success();
+            }
+        }
     }
 }
