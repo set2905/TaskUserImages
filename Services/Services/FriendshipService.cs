@@ -42,6 +42,13 @@ namespace Services.Services
             return await friendshipRequestRepository.GetIncomingFriendshipRequests(userId, skip, take);
         }
 
+        public async Task<Result<List<FriendshipRequest>>> GetIncomingFriendshipRequests(string identityId, int skip, int take)
+        {
+            var userResult = await userProfileRepository.GetByIdentityAsync(identityId);
+            if (!userResult.IsSuccess) return Result.NotFound("User not found");
+            return await GetIncomingFriendshipRequests(userResult.Value.Id, skip, take);
+        }
+
         public async Task<Result<List<User>>> GetFriends(UserId userId)
         {
             return await userProfileRepository.GetFriends(userId);

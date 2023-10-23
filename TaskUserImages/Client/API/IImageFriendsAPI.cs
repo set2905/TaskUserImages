@@ -18,6 +18,8 @@ namespace TaskUserImages.Client.API
         [Post("/friends/add")]
         Task AddFriend(string userName);        
         [Get("/friends/requestexists")]
-        Task<bool> IsRequestPending(string userName);
+        Task<bool> IsRequestPending(string userName);        
+        [Get("/friends/incomingrequests")]
+        Task<List<FriendRequestDto>> GetIncomingFriendRequests(int page);
     }
 }
