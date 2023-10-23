@@ -1,4 +1,5 @@
 ﻿using Ardalis.GuardClauses;
+using System.Security.Cryptography;
 
 namespace Domain.Entities
 {
@@ -12,10 +13,18 @@ namespace Domain.Entities
             Id=id;
             UserId=userId;
             FileName=fileName;
+
+            var randomNumber = new byte[64];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                Key = Convert.ToBase64String(randomNumber);
+            }
         }
         public ImageId Id { get; private set; }
         public UserId UserId { get; private set; }
         public string FileName { get; private set; }
+        public string Key { get; private set; }
         private Image() { }
     }
     public record ImageId(Guid Value);

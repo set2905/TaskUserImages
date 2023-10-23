@@ -5,11 +5,13 @@ namespace TaskUserImages.Client.API
 {
     public interface IImageFriendsAPI
     {
-        [Get("/User/GetUserProfiles")]
+        [Get("/user/profiles")]
         Task<List<UserDto>> GetUserProfiles(int page, int pageSize);
-        [Post("/Image/Upload")]
+        [Post("/images/upload")]
         Task UploadImage(UploadedFile file);
-        [Post("/Image/Get")]
+        [Get("/images/img")]
         Task<object> GetImage(Guid id);
+        [Get("/images/userimages")]
+        Task<List<string>> GetUserImageUrls(string userName);
     }
 }

@@ -7,7 +7,7 @@ using Services.Services.Interfaces;
 
 namespace TaskUserImages.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace TaskUserImages.Server.Controllers
 
         [TranslateResultToActionResult]
         [HttpGet]
-        [Route("GetUserProfiles")]
+        [Route("profiles")]
         public async Task<Result<List<UserDto>>> GetUsers(int page, int pageSize)
         {
             return (await userService.GetUserProfiles(page, pageSize)).Map(uli => uli.ConvertAll(u=>mapper.Map<UserDto>(u)));

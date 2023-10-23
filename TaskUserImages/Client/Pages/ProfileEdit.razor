@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization;
 @using TaskUserImages.Client.API;
 @inject IImageFriendsAPI api
+@inject ISnackbar snackBar
 @attribute [Authorize]
 
 <h3>ProfileEdit</h3>
@@ -14,22 +15,39 @@
             {
                 <MudImage Height="100" Src="@img" />
             }
+            <MudChipSet>
+                @foreach (var uploaded in uploadedFiles)
+                {
+                    <MudChip>
+                        @uploaded.Name
+                    </MudChip>
+                }
+            </MudChipSet>
         </MudPaper>
     </ButtonTemplate>
 </MudFileUpload>
-<MudImage Height="100" Src="https://localhost:7096/api/Image/Get?imageId=0DA7EEF6-4C56-4A1B-B662-A1E7DF1825DB" />
-
 
 <MudButton OnClick="SendFilesToServer">Send</MudButton>
 
 
 @code {
+    private const long MAXALLOWEDSIZE = 5120000;
     private static string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full z-10";
     private string DragClass = DefaultDragClass;
 
-    IList<IBrowserFile> allFiles = new List<IBrowserFile>();
+    IList<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
     private List<string> existingImages = new();
 
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            existingImages = await api.GetUserImageUrls("username");
+            StateHasChanged();
+        }
+    }
 
     private void UploadFiles(InputFileChangeEventArgs e)
     {
@@ -37,22 +55,30 @@
         var files = e.GetMultipleFiles();
         foreach (var file in files)
         {
-            this.allFiles.Add(file);
+            this.uploadedFiles.Add(file);
         }
     }
 
     //Лучше бы Task WhenAll?
     private async Task SendFilesToServer()
     {
-        foreach (var file in allFiles)
+        foreach (var file in uploadedFiles)
         {
-            using (Stream stream = file.OpenReadStream())
+            if (file.Size>MAXALLOWEDSIZE)
+            {
+                snackBar.Add($"File {file.Name} exceeds max allowed size of 5MB", Severity.Error);
+                continue;
+            }
+            using (Stream stream = file.OpenReadStream(MAXALLOWEDSIZE))
             {
                 byte[] buffer = new byte[file.Size];
                 int length = await stream.ReadAsync(buffer);
                 await api.UploadImage(new(buffer));
             }
         }
+        uploadedFiles.Clear();
+        existingImages = await api.GetUserImageUrls("username");
+        StateHasChanged();
     }
 
     private void SetDragClass()

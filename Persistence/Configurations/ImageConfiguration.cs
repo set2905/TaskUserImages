@@ -13,6 +13,7 @@ namespace Persistence.Configurations
 
             builder.Property(i => i.Id).HasConversion(id => id.Value,
                                                           val => new(val));
+
             builder.HasOne<User>()
                    .WithMany()
                    .HasForeignKey(img=>img.UserId);

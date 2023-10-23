@@ -26,11 +26,23 @@ namespace Services.Services
             this.fileFormatInspector=fileFormatInspector;
         }
 
-        public async Task<Result<string>> GetImageFilePath(ImageId id)
+        public async Task<Result<List<(ImageId imgId, string key)>>> GetUserImageUrlsQueryData(string otherUserName, string myIdentityId)
+        {
+            var userResult = await userProfileRepo.GetByUserNameAsync(otherUserName);
+            if (!userResult.IsSuccess) return Result.NotFound("User not found");
+            UserId otherId = userResult.Value.Id;
+            if (!(await IsAllowedToGetUserImages(otherId, myIdentityId))) return Result.Forbidden();
+            Result<List<(ImageId imgId, string key)>> result = await imgRepo.GetUserImageUrlsQueryData(otherId);
+            if (!result.IsSuccess) return Result.NotFound();
+            return result.Value;
+        }
+
+        public async Task<Result<string>> GetImageFilePath(ImageId id, string key)
         {
             Result<Image> imageResult = await imgRepo.GetByIdAsync(id);
-            if (!imageResult.IsSuccess) return Result.Error("Couldnt get an image by provided id");
-            string path= Path.Combine(baseFilePath, $"{imageResult.Value.FileName}");
+            if (!imageResult.IsSuccess) return Result.Forbidden();
+            if (imageResult.Value.Key!=key) return Result.Forbidden();
+            string path = Path.Combine(baseFilePath, $"{imageResult.Value.FileName}");
             return path;
         }
 
@@ -77,6 +89,11 @@ namespace Services.Services
                 return Result.Success(fileName);
             else
                 return Result.Error("Could not insert image path to the db");
+        }
+
+        private async Task<bool> IsAllowedToGetUserImages(UserId otherId, string myIdentityId)
+        {
+            return true;
         }
 
     }

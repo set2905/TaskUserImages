@@ -26,6 +26,17 @@ namespace Persistence.Repo
             }
         }
 
+        public async Task<Result<User>> GetByUserNameAsync(string userName)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                DbSet<User> users = context.Set<User>();
+                User? result = await users.SingleOrDefaultAsync(x => x.UserName == userName);
+                if (result == null) return Result.NotFound($"User with name {userName} is not found");
+                return Result.Success(result);
+            }
+        }
+
         public override async Task<Result<User>> GetByIdAsync(UserId id)
         {
             using (var context = contextFactory.CreateDbContext())
