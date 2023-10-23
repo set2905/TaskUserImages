@@ -27,7 +27,7 @@ namespace TaskUserImages.Server.Controllers
         public async Task<Result> UploadImage(UploadedFile uploaded)
         {
             string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Result.Error("Ypur user id could not be found");
+            if (userId == null) return Result.Error("User id could not be found");
 
             return await imageService.UploadImage(userId, uploaded);
         }

@@ -31,8 +31,5 @@ namespace Persistence.Repo
                 return result.ConvertAll(x => (x.Id, x.Key));
             }
         }
-
-
-
     }
 }

@@ -12,9 +12,39 @@ namespace Persistence.Repo
         {
         }
 
-        public Task<Result<bool>> CheckForPendingFriendshipRequestAsync(User from, User to)
+        public async Task<Result<List<FriendshipRequest>>> GetIncomingFriendshipRequests(UserId userId, int skip, int take)
         {
-            throw new NotImplementedException();
+            using (var context = contextFactory.CreateDbContext())
+            {
+                DbSet<FriendshipRequest> requests = context.Set<FriendshipRequest>();
+                List<FriendshipRequest> incoming = await requests.Where(x => x.FriendId == userId && !x.Accepted && !x.Rejected)
+                                                                 .OrderBy(x => x.UserId)
+                                                                 .Skip(skip)
+                                                                 .Take(take)
+                                                                 .ToListAsync();
+                return Result.Success(incoming);
+            }
+        }
+
+        public async Task<Result<bool>> CheckForPendingFriendshipRequestAsync(UserId from, UserId to)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                DbSet<FriendshipRequest> requests = context.Set<FriendshipRequest>();
+                bool exists = await requests.AnyAsync(x => x.UserId == from && x.FriendId == to&&!x.Accepted&&!x.Deleted&&!x.Rejected);
+                return Result.Success(exists);
+            }
+        }
+
+        public async Task<Result<FriendshipRequest>> FindFriendRequest(UserId from, UserId to)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                DbSet<FriendshipRequest> requests = context.Set<FriendshipRequest>();
+                var found = await requests.SingleOrDefaultAsync(x => x.UserId == from && x.FriendId == to);
+                if (found==null) return Result.NotFound("Friend request not found");
+                return Result.Success(found);
+            }
         }
 
         public override Task<Result<FriendshipRequest>> GetByIdAsync(FriendshipRequestId id)

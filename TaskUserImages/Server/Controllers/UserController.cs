@@ -2,6 +2,7 @@
 using Ardalis.Result.AspNetCore;
 using AutoMapper;
 using Contracts.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services.Interfaces;
 
@@ -20,6 +21,7 @@ namespace TaskUserImages.Server.Controllers
             this.mapper=mapper;
         }
 
+        [Authorize]
         [TranslateResultToActionResult]
         [HttpGet]
         [Route("profiles")]

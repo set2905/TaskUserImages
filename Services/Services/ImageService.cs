@@ -14,9 +14,14 @@ namespace Services.Services
         private readonly string baseFilePath;
         private readonly IImageRepository imgRepo;
         private readonly IUserProfileRepository userProfileRepo;
+        private readonly IFriendshipRequestRepository friendshipRequestRepository;
         private readonly IFileFormatInspector fileFormatInspector;
 
-        public ImageService(string baseFilePath, IImageRepository imgRepo, IUserProfileRepository userProfileRepo, IFileFormatInspector fileFormatInspector)
+        public ImageService(string baseFilePath,
+                            IImageRepository imgRepo,
+                            IUserProfileRepository userProfileRepo,
+                            IFileFormatInspector fileFormatInspector,
+                            IFriendshipRequestRepository friendshipRequestRepository)
         {
             if (!Directory.Exists(baseFilePath))
                 throw new DirectoryNotFoundException($"{baseFilePath} does not exist, please provide valid directory path in appsettings.json file");
@@ -24,6 +29,7 @@ namespace Services.Services
             this.imgRepo=imgRepo;
             this.userProfileRepo=userProfileRepo;
             this.fileFormatInspector=fileFormatInspector;
+            this.friendshipRequestRepository=friendshipRequestRepository;
         }
 
         public async Task<Result<List<(ImageId imgId, string key)>>> GetUserImageUrlsQueryData(string otherUserName, string myIdentityId)
@@ -91,9 +97,21 @@ namespace Services.Services
                 return Result.Error("Could not insert image path to the db");
         }
 
-        private async Task<bool> IsAllowedToGetUserImages(UserId otherId, string myIdentityId)
+        private async Task<Result<bool>> IsAllowedToGetUserImages(UserId otherId, string myIdentityId)
         {
-            return true;
+            Result<User> userResult = await userProfileRepo.GetByIdentityAsync(myIdentityId);
+            if (!userResult.IsSuccess) return Result.NotFound("User with provided identity id not found");
+            if (otherId==userResult.Value.Id) return Result.Success(true);
+
+            Result<bool> isInFriendListResult = await userProfileRepo.IsInFriendlist(userResult.Value.Id, otherId);
+            if (!isInFriendListResult.IsSuccess) return Result.Error("Couldnt check user existense in friendlist");
+            if (isInFriendListResult.Value) return Result.Success(true);
+
+            Result<bool> pendingFriendshipReqResult = await friendshipRequestRepository.CheckForPendingFriendshipRequestAsync(otherId,
+                                                                                                                     userResult.Value.Id);
+            if (!pendingFriendshipReqResult.IsSuccess) return Result.Error("Couldnt check for pending friendship request");
+            if (pendingFriendshipReqResult.Value) return Result.Success(true);
+            return Result.Success(true);
         }
 
     }

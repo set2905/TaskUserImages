@@ -15,6 +15,24 @@ namespace Persistence.Repo
         {
         }
 
+        public async Task<Result<bool>> IsInFriendlist(UserId userId, UserId friendId)
+        {
+            Result<User> userResult = await GetByIdAsync(userId);
+            if (!userResult.IsSuccess) return Result.NotFound("User not found");
+            if (userResult.Value.FriendsWith.Any(f => f.Id==friendId)
+                || userResult.Value.FriendsTo.Any(f => f.Id==friendId))
+                return Result.Success(true);
+            else
+                return Result.Success(false);
+        }
+
+        public async Task<Result<List<User>>> GetFriends(UserId userId)
+        {
+            Result<User> userResult = await GetByIdAsync(userId);
+            if (!userResult.IsSuccess) return Result.NotFound("User not found");
+            return Result.Success(userResult.Value.FriendsTo.Union(userResult.Value.FriendsWith).OrderBy(x => x.UserName).ToList());
+        }
+
         public async Task<Result<User>> GetByIdentityAsync(string identityId)
         {
             using (var context = contextFactory.CreateDbContext())
@@ -43,7 +61,7 @@ namespace Persistence.Repo
             {
                 DbSet<User> users = context.Set<User>();
                 User? result = await users.SingleOrDefaultAsync(x => x.Id == id);
-                if (result == null) return Result.NotFound($"User with id {id.Value} is not found");
+                if (result == null) return Result.NotFound($"User not found");
                 return Result.Success(result);
             }
         }
@@ -68,7 +86,7 @@ namespace Persistence.Repo
                 ErrorMessage=$"Minimum page is {MIN_PAGESIZE}",
                 Severity=ValidationSeverity.Error,
                 ErrorCode="400"
-                
+
             });
             if (pageSize < MIN_PAGE) errors.Add(new()
             {

@@ -1,16 +1,21 @@
 ﻿@page "/"
 @using Contracts.Dto;
+@using Microsoft.AspNetCore.Authorization;
 @using TaskUserImages.Client.API;
 @inject IImageFriendsAPI api
+
+@attribute [Authorize]
 
 <PageTitle>Index</PageTitle>
 Welcome to your new app.
 
 <MudList>
-    @foreach(var user in users)
+    @foreach (UserDto user in users)
     {
         <MudListItem>
-            @user.UserName
+            <MudLink Href="@GetUserHref(user)">
+                @user.UserName
+            </MudLink>
         </MudListItem>
     }
 </MudList>
@@ -22,8 +27,13 @@ Welcome to your new app.
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            users = await api.GetUserProfiles(1,10);
+            users = await api.GetUserProfiles(1, 10);
             StateHasChanged();
         }
+    }
+
+    private string GetUserHref(UserDto user)
+    {
+        return $"Profile/{user.UserName}";
     }
 }

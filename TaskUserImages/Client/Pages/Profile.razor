@@ -1,0 +1,78 @@
+﻿@page "/Profile/{UserName}"
+@using TaskUserImages.Client.API;
+@inject IImageFriendsAPI api
+@inject ISnackbar snackBar
+
+<PageTitle>Profile</PageTitle>
+@if (isFriend!=null)
+{
+    <MudText>
+        @isFriend
+    </MudText>
+}
+@if (isFriend==true)
+{
+    @foreach (var img in existingImages)
+    {
+        <MudImage Height="100" Src="@img" />
+    }
+}
+@if (isFriend==false&&isRequestPending==false)
+{
+
+    <MudIconButton Disabled="@sendingFriendRequest" Variant="Variant.Filled" Icon="@Icons.Material.Filled.PersonAdd" Color="Color.Success" OnClick="SendFriendRequest">
+        @if (sendingFriendRequest)
+        {
+            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+            <MudText Class="ms-2">Processing</MudText>
+        }
+        else
+        {
+            <MudText>Add friend</MudText>
+        }
+    </MudIconButton>
+}
+@if (isRequestPending == true)
+{
+    <MudText>
+        You sent friend request to this user
+    </MudText>
+}
+
+@code {
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+    public bool? isFriend;
+    public bool? isRequestPending;
+    public bool sendingFriendRequest = false;
+    private List<string> existingImages = new();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        await InitializeFriend();
+
+    }
+    private async Task InitializeFriend()
+    {
+        if (UserName == null) return;
+        isRequestPending = await api.IsRequestPending(UserName);
+        if (isRequestPending==false)
+        {
+            isFriend = await api.IsFriend(UserName);
+            if (isFriend==true)
+                existingImages = await api.GetUserImageUrls(UserName);
+        }
+    }
+
+    private async Task SendFriendRequest()
+    {
+        if (UserName.Length == 0||isRequestPending==true) return;
+        sendingFriendRequest = true;
+        await api.AddFriend(UserName);
+        sendingFriendRequest = false;
+        await InitializeFriend();
+    }
+}
+

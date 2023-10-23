@@ -8,12 +8,13 @@ namespace Domain.Repo
         /// <summary>
         /// Checks if the specified users have a pending friendship request.
         /// </summary>
-        /// <param name="user">The user.</param>
-        /// <param name="friend">The friend.</param>
+        /// <param name="user">The user id.</param>
+        /// <param name="friend">The friend id.</param>
         /// <returns>True if the specified users have a pending friendship request, otherwise false.</returns>
-        Task<Result<bool>> CheckForPendingFriendshipRequestAsync(User user, User friend);
-
+        Task<Result<bool>> CheckForPendingFriendshipRequestAsync(UserId user, UserId friend);
+        Task<Result<FriendshipRequest>> FindFriendRequest(UserId from, UserId to);
         Task<Result<FriendshipRequest>> GetByIdAsync(FriendshipRequestId id);
+        Task<Result<List<FriendshipRequest>>> GetIncomingFriendshipRequests(UserId userId, int skip, int take);
         Task<Result> InsertAsync(FriendshipRequest entity, CancellationToken cancellationToken = default);
 
     }

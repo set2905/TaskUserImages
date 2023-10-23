@@ -3,7 +3,6 @@ using FileSignatures;
 using FileSignatures.Formats;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Persistence.Repo;
 using Services.Services;
 using Services.Services.Interfaces;
 
@@ -18,10 +17,12 @@ namespace Services
             services.AddSingleton<IFileFormatInspector>(inspector);
 
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IImageService, ImageService>(pv=>new("C:\\Users\\user\\Downloads",
+            services.AddScoped<IFriendshipService, FriendshipService>();
+            services.AddScoped<IImageService, ImageService>(pv => new("C:\\Users\\user\\Downloads",
                                                                     pv.GetService<IImageRepository>()!,
                                                                     pv.GetService<IUserProfileRepository>()!,
-                                                                    pv.GetService<IFileFormatInspector>()!));
+                                                                    pv.GetService<IFileFormatInspector>()!,
+                                                                    pv.GetService<IFriendshipRequestRepository>()!));
 
             return services;
         }

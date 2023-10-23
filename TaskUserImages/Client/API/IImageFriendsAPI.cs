@@ -13,5 +13,11 @@ namespace TaskUserImages.Client.API
         Task<object> GetImage(Guid id);
         [Get("/images/userimages")]
         Task<List<string>> GetUserImageUrls(string userName);
+        [Get("/friends/isfriend")]
+        Task<bool> IsFriend(string userName);
+        [Post("/friends/add")]
+        Task AddFriend(string userName);        
+        [Get("/friends/requestexists")]
+        Task<bool> IsRequestPending(string userName);
     }
 }
