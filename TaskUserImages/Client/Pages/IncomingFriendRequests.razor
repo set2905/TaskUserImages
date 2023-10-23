@@ -1,0 +1,20 @@
+﻿@using Contracts.Dto;
+@using TaskUserImages.Client.API;
+@inject IImageFriendsAPI api;
+<PageTitle>Incoming friend requests</PageTitle>
+<MudList>
+    @foreach(var request in incoming)
+    {
+      //  name!!!
+    }
+</MudList>
+
+@code {
+    private List<FriendRequestDto> incoming = new();
+    private int currentPage = 1;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        incoming = await api.GetIncomingFriendRequests(currentPage);
+    }
+}
