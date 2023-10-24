@@ -18,7 +18,6 @@ namespace TaskUserImages.Server.Controllers
         private readonly IFriendshipService friendshipService;
         private readonly IMapper mapper;
 
-
         public FriendshipController(IFriendshipService friendshipService, IMapper mapper)
         {
             this.friendshipService=friendshipService;

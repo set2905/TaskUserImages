@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ardalis.GuardClauses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ namespace Domain.Entities
 
         public Friendship(UserId userId, UserId friendId)
         {
+            Guard.Against.Default(userId.Value, nameof(userId), "The identifier is required.");
+            Guard.Against.Default(friendId.Value, nameof(friendId), "The identifier is required.");
             UserId=userId;
             FriendId=friendId;
         }

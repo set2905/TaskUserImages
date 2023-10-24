@@ -12,6 +12,9 @@ namespace Domain.Entities
         public User(UserId id, string userName, string identityId)
         {
             Guard.Against.Default(id.Value, nameof(id), "The identifier is required.");
+            Guard.Against.NullOrEmpty(userName, nameof(userName), "The username is required.");
+            Guard.Against.NullOrEmpty(identityId, nameof(identityId), "The identity id is required.");
+
             Id=id;
             UserName=userName;
             AspUserIdentity = identityId;
