@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using Domain.Entities;
+using Domain.Errors;
 using Domain.Repo;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ namespace Persistence.Repo
         public async Task<Result<bool>> IsInFriendlist(UserId userId, UserId friendId)
         {
             Result<User> userResult = await GetByIdAsync(userId);
-            if (!userResult.IsSuccess) return Result.NotFound("User not found");
+            if (!userResult.IsSuccess) return DomainErrors.User.NotFound;
             if (userResult.Value.FriendsWith.Any(f => f.Id==friendId)
                 || userResult.Value.FriendsTo.Any(f => f.Id==friendId))
                 return Result.Success(true);
@@ -29,7 +30,7 @@ namespace Persistence.Repo
         public async Task<Result<List<User>>> GetFriends(UserId userId)
         {
             Result<User> userResult = await GetByIdAsync(userId);
-            if (!userResult.IsSuccess) return Result.NotFound("User not found");
+            if (!userResult.IsSuccess) return DomainErrors.User.NotFound;
             return Result.Success(userResult.Value.FriendsTo.Union(userResult.Value.FriendsWith).OrderBy(x => x.UserName).ToList());
         }
 
@@ -42,7 +43,7 @@ namespace Persistence.Repo
                     .Include(x => x.FriendsWith)
                     .Include(x => x.Images)
                     .SingleOrDefaultAsync(x => x.AspUserIdentity == identityId);
-                if (result == null) return Result.NotFound($"User with identity {identityId} is not found");
+                if (result == null) return DomainErrors.User.NotFound;
                 return Result.Success(result);
             }
         }
@@ -56,7 +57,7 @@ namespace Persistence.Repo
                     .Include(x => x.FriendsWith)
                     .Include(x => x.Images)
                     .SingleOrDefaultAsync(x => x.UserName == userName);
-                if (foundUser == null) return Result.NotFound($"User with name {userName} is not found");
+                if (foundUser == null) return DomainErrors.User.NotFound;
                 return Result.Success(foundUser);
             }
         }
@@ -70,7 +71,7 @@ namespace Persistence.Repo
                     .Include(x => x.FriendsWith)
                     .Include(x => x.Images)
                     .SingleOrDefaultAsync(x => x.Id == id);
-                if (result == null) return Result.NotFound($"User not found");
+                if (result == null) return DomainErrors.User.NotFound;
                 return Result.Success(result);
             }
         }
