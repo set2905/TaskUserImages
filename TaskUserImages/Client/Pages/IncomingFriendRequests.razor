@@ -10,7 +10,7 @@
         <MudText>
             @request.FromUsername wants to add you as a friend!
         </MudText>
-        <AddFriendButton Username="@request.FromUsername" />
+        <AddFriendButton Username="@request.FromUsername" OnRequestSent="GetIncomingRequests" />
     }
 </MudList>
 
@@ -22,8 +22,13 @@
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            incoming = await api.GetIncomingFriendRequests(currentPage);
-            StateHasChanged();
+            await GetIncomingRequests();
         }
+    }
+
+    private async Task GetIncomingRequests()
+    {
+        incoming = await api.GetIncomingFriendRequests(currentPage);
+        StateHasChanged();
     }
 }

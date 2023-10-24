@@ -6,24 +6,20 @@
         </MudText>
     </MudNavLink>
     <AuthorizeView Context="authorizedNavMenuContext">
-        <MudNavGroup Title=Dashboard Icon="@Icons.Material.Filled.Dashboard" Expanded="true">
-            <MudNavLink Href="Review/Edit" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.Add">
-                <MudText Typo="Typo.body1">
-                    Users
-                </MudText>
-            </MudNavLink>
-            <AuthorizeView>
+        <AuthorizeView>
+            <MudNavGroup Title=Dashboard Icon="@Icons.Material.Filled.Dashboard" Expanded="true">
                 <MudNavLink Href="Profile/Edit" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.People">
                     <MudText Typo="Typo.body1">
-                       My profile
-                    </MudText>
-                </MudNavLink>                
-                <MudNavLink Href="Profile/FriendRequests" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.People">
-                    <MudText Typo="Typo.body1">
-                       New friend requests
+                        My profile
                     </MudText>
                 </MudNavLink>
-            </AuthorizeView>
-        </MudNavGroup>
+                <MudNavLink Href="Profile/FriendRequests" Match="NavLinkMatch.Prefix" IconColor="Color.Surface" Icon="@Icons.Material.Filled.People">
+                    <MudText Typo="Typo.body1">
+                        New friend requests
+                    </MudText>
+                </MudNavLink>
+            </MudNavGroup>
+        </AuthorizeView>
+
     </AuthorizeView>
 </MudNavMenu>

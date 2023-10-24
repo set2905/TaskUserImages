@@ -6,19 +6,17 @@
 
 @attribute [Authorize]
 
-<PageTitle>Index</PageTitle>
-Welcome to your new app.
-
-<MudList>
-    @foreach (UserDto user in users)
-    {
-        <MudListItem>
-            <MudLink Href="@GetUserHref(user)">
-                @user.UserName
-            </MudLink>
-        </MudListItem>
-    }
-</MudList>
+<PageTitle>User profiles</PageTitle>
+    <MudList>
+        @foreach (UserDto user in users)
+        {
+            <MudListItem Avatar="@Icons.Material.Filled.Person">
+                <MudLink Href="@GetUserHref(user)">
+                    @user.UserName
+                </MudLink>
+            </MudListItem>
+        }
+    </MudList>
 @code
 {
     private List<UserDto> users = new();

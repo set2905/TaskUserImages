@@ -1,33 +1,50 @@
 ﻿@page "/Profile/{UserName}"
+@using Refit;
 @using TaskUserImages.Client.API;
 @inject IImageFriendsAPI api
 @inject ISnackbar snackBar
 
 <PageTitle>Profile</PageTitle>
-@if (isFriend!=null)
-{
-    <MudText>
-        @isFriend
-    </MudText>
-}
-@if (isFriend==true)
-{
-    @foreach (var img in existingImages)
-    {
-        <MudImage Height="100" Src="@img" />
-    }
-}
-@if (isFriend==false&&isFriendRequestPending==false)
-{
-    <AddFriendButton Username="@UserName" OnRequestSent="@InitializeFriend" />
 
-}
-@if (isFriendRequestPending == true)
-{
-    <MudText>
-        You sent friend request to this user
-    </MudText>
-}
+<MudGrid Justify="Justify.Center">
+
+    <MudItem xs="12" md="6" Class="my-4">
+        <MudStack Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Start">
+            @if (isFriend!=null)
+            {
+                @if (isFriend == true)
+                {
+                    <MudText>
+                        This user is your friend!
+                    </MudText>
+                }
+                else
+                {
+                    <MudText>
+                        This user is NOT your friend!
+                    </MudText>
+                }
+            }
+            @if (isFriend==false&&isFriendRequestPending==false)
+            {
+                <AddFriendButton Username="@UserName" OnRequestSent="@InitializeFriend" />
+
+            }
+            @if (isFriendRequestPending == true)
+            {
+                <MudText>
+                    You sent friend request to this user
+                </MudText>
+            }
+        </MudStack>
+
+        @foreach (var img in existingImages)
+        {
+            <MudImage Height="100" Src="@img" />
+        }
+    </MudItem>
+
+</MudGrid>
 
 @code {
     [Parameter]
@@ -50,9 +67,16 @@
         if (isFriendRequestPending==false)
         {
             isFriend = await api.IsFriend(UserName);
-            if (isFriend==true)
-                existingImages = await api.GetUserImageUrls(UserName);
         }
+        try
+        {
+            existingImages = await api.GetUserImageUrls(UserName);
+        }
+        catch (ApiException ex)
+        {
+            snackBar.Add("Cant get user images: " + ex.Message);
+        }
+
     }
 }
 

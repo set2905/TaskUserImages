@@ -115,17 +115,20 @@ namespace Services.Services
 
         private async Task<Result<bool>> IsAllowedToGetUserImages(UserId otherId, User user)
         {
-            if (otherId==user.Id) return Result.Success(true);
+            if (otherId==user.Id) 
+                return Result.Success(true);
 
             Result<bool> isInFriendListResult = await userProfileRepo.IsInFriendlist(user.Id, otherId);
             if (!isInFriendListResult.IsSuccess) return DomainErrors.Friendship.CheckFriendlist;
-            if (isInFriendListResult.Value) return Result.Success(true);
+            if (isInFriendListResult.Value)
+                return Result.Success(true);
 
             Result<bool> pendingFriendshipReqResult = await friendshipRequestRepository.CheckForPendingFriendshipRequestAsync(otherId,
                                                                                                                      user.Id);
             if (!pendingFriendshipReqResult.IsSuccess) return DomainErrors.Friendship.CheckPendingRequest;
-            if (pendingFriendshipReqResult.Value) return Result.Success(true);
-            return Result.Success(true);
+            if (pendingFriendshipReqResult.Value) 
+                return Result.Success(true);
+            return Result.Success(false);
         }
 
     }
