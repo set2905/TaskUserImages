@@ -14,6 +14,7 @@ using Ardalis.Result;
 using Domain.Repo;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -110,7 +111,10 @@ namespace TaskUserImages.Server.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            if (Url!=null&&returnUrl==null)
+                returnUrl = Url.Content("~/");
+            else
+                returnUrl="";
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
@@ -130,7 +134,10 @@ namespace TaskUserImages.Server.Areas.Identity.Pages.Account
                         _logger.LogInformation($"New user profile data could not be created: {userDataCreationResult.Errors.First()}");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
+                    if (returnUrl.Length>0)
+                        return LocalRedirect(returnUrl);
+                    else
+                        return new OkResult();
 
                 }
                 foreach (var error in result.Errors)
@@ -140,7 +147,10 @@ namespace TaskUserImages.Server.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
-            return Page();
+            if (PageContext!=null&&PageContext.HttpContext!=null)
+                return Page();
+            else 
+                return BadRequest(ModelState);
         }
 
         private ApplicationUser CreateUser()
