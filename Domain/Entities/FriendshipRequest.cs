@@ -100,7 +100,7 @@ namespace Domain.Entities
         /// </summary>
         /// <param name="utcNow">The current date and time in UTC format.</param>
         /// <returns>The result of the rejecting operation.</returns>
-        public Result Reject()
+        public async Task<Result> Reject(IFriendshipRequestRepository friendshipRequestRepository)
         {
             if (Accepted)
             {
@@ -113,8 +113,10 @@ namespace Domain.Entities
             }
 
             Rejected = true;
-
-            return Result.Success();
+            Result editResult = await friendshipRequestRepository.UpdateAsync(this);
+            if (editResult.IsSuccess)
+                return Result.Success();
+            return Result.Error("Error rejecting friend request");
         }
     }
     public record FriendshipRequestId(Guid Value);

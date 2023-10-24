@@ -25,18 +25,6 @@ namespace Domain.Entities
         public IReadOnlyCollection<Image> Images => images;
         public IReadOnlyCollection<User> FriendsWith => friendsWith;
         public IReadOnlyCollection<User> FriendsTo => friendsTo;
-
-        public Result AddFriendsWith(User toAdd)
-        {
-            friendsWith.Add(toAdd);
-            return Result.Success();
-        }
-        public Result AddFriendsTo(User toAdd)
-        {
-            friendsTo.Add(toAdd);
-            return Result.Success();
-        }
-
     }
     public record UserId(Guid Value);
 }
