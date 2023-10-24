@@ -12,6 +12,7 @@ namespace Persistence.Repo
         {
         }
 
+        ///<inheritdoc/>
         public override async Task<Result<Image>> GetByIdAsync(ImageId id)
         {
             using (var context = contextFactory.CreateDbContext())

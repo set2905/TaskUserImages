@@ -41,7 +41,9 @@ namespace Persistence.Repo
                 return Result.Success();
             }
         }
-
+        /// <summary>
+        /// Updates the entity
+        /// </summary>
         public virtual async Task<Result> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())

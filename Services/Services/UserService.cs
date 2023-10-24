@@ -13,12 +13,15 @@ namespace Services.Services
         {
             this.userRepository=userRepository;
         }
+        /// <inheritdoc/>
 
         public async Task<Result> CreateUserProfile(string userName, string id)
         {
             User user = new(new(Guid.NewGuid()), userName, id);
             return await userRepository.InsertAsync(user);
         }
+        /// <inheritdoc/>
+
         public async Task<Result<List<User>>> GetUserProfiles(int skip, int take)
         {
             return await userRepository.GetUsersAsync(skip, take);

@@ -35,6 +35,7 @@ namespace Services.Services
             this.fileFormatInspector=fileFormatInspector;
             this.friendshipRequestRepository=friendshipRequestRepository;
         }
+        /// <inheritdoc/>
 
         public async Task<Result<List<(ImageId imgId, string key)>>> GetUserImageUrlsQueryData(string otherUserName, string myIdentityId)
         {
@@ -45,6 +46,7 @@ namespace Services.Services
             return await GetImageUrlsQueryData(otherResult.Value, userResult.Value);
 
         }
+        /// <inheritdoc/>
 
         public async Task<Result<List<(ImageId imgId, string key)>>> GetUserImageUrlsQueryData(string myIdentityId)
         {
@@ -52,6 +54,7 @@ namespace Services.Services
             if (!userResult.IsSuccess) return DomainErrors.User.NotFound;
             return await GetImageUrlsQueryData(userResult.Value, userResult.Value);
         }
+        /// <inheritdoc/>
 
         public async Task<Result<string>> GetImageFilePath(ImageId id, string key)
         {
@@ -61,6 +64,7 @@ namespace Services.Services
             string path = Path.Combine(baseFilePath, $"{imageResult.Value.FileName}");
             return path;
         }
+        /// <inheritdoc/>
 
         public async Task<Result> UploadImage(string identityId, UploadedFile imageToUpload)
         {

@@ -26,7 +26,7 @@ namespace Persistence.Repo
                 return Result.Success(incoming);
             }
         }
-
+        /// <inheritdoc />
         public async Task<Result<bool>> CheckForPendingFriendshipRequestAsync(UserId from, UserId to)
         {
             using (var context = contextFactory.CreateDbContext())
@@ -36,6 +36,7 @@ namespace Persistence.Repo
                 return Result.Success(exists);
             }
         }
+        /// <inheritdoc />
 
         public async Task<Result<FriendshipRequest>> FindFriendRequestAsync(UserId from, UserId to)
         {
@@ -47,6 +48,7 @@ namespace Persistence.Repo
                 return Result.Success(found);
             }
         }
+        /// <inheritdoc />
 
         public async Task<Result> AddFriend(UserId userId, UserId friendId, CancellationToken cancellationToken = default)
         {
@@ -59,6 +61,8 @@ namespace Persistence.Repo
                 return Result.Success();
             }
         }
+        /// <inheritdoc />
+
         public override Task<Result<FriendshipRequest>> GetByIdAsync(FriendshipRequestId id)
         {
             throw new NotImplementedException();

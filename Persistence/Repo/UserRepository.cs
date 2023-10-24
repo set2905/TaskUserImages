@@ -16,6 +16,7 @@ namespace Persistence.Repo
         {
         }
 
+        /// <inheritdoc />
         public async Task<Result<bool>> IsInFriendlist(UserId userId, UserId friendId)
         {
             Result<User> userResult = await GetByIdAsync(userId);
@@ -27,6 +28,7 @@ namespace Persistence.Repo
                 return Result.Success(false);
         }
 
+        /// <inheritdoc />
         public async Task<Result<List<User>>> GetFriends(UserId userId)
         {
             Result<User> userResult = await GetByIdAsync(userId);
@@ -34,6 +36,7 @@ namespace Persistence.Repo
             return Result.Success(userResult.Value.FriendsTo.Union(userResult.Value.FriendsWith).OrderBy(x => x.UserName).ToList());
         }
 
+        /// <inheritdoc />
         public async Task<Result<User>> GetByIdentityAsync(string identityId)
         {
             using (var context = contextFactory.CreateDbContext())
@@ -48,6 +51,7 @@ namespace Persistence.Repo
             }
         }
 
+        /// <inheritdoc />
         public async Task<Result<User>> GetByUserNameAsync(string userName)
         {
             using (var context = contextFactory.CreateDbContext())
@@ -62,6 +66,7 @@ namespace Persistence.Repo
             }
         }
 
+        /// <inheritdoc />
         public override async Task<Result<User>> GetByIdAsync(UserId id)
         {
             using (var context = contextFactory.CreateDbContext())
@@ -75,6 +80,7 @@ namespace Persistence.Repo
                 return Result.Success(result);
             }
         }
+        /// <inheritdoc />
         public async Task<Result<List<User>>> GetUsersAsync(int page, int pageSize)
         {
             var errors = GetValidationErrors(page, pageSize);
