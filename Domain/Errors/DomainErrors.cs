@@ -14,7 +14,20 @@ namespace Domain.Errors
         {
             public static Result NotFound => Result.NotFound("User not found");
 
-           
+        }
+        public static class Friendship
+        {
+            public static Result CheckFriendlist => Result.Error("Couldnt check user existense in friendlist");
+            public static Result CheckPendingRequest => Result.Error("Couldnt check for pending friendship request");;
+
+        }
+        public static class Image
+        {
+            public static Result NotFound => Result.NotFound("Image not found");
+            public static Result CouldNotSaveFile => Result.Error("Image file could not be saved");
+            public static Result CouldNotSaveFilePath => Result.Error("Image file path could not be saved");
+            public static Result WrongFormat => Result.Error("Wrong file format");
+
         }
     }
 }

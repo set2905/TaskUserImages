@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore;
 using Services.Services.Interfaces;
 using System.IO;
+using Domain.Errors;
 
 namespace Services.Services
 {
@@ -37,7 +38,7 @@ namespace Services.Services
         public async Task<Result<List<(ImageId imgId, string key)>>> GetUserImageUrlsQueryData(string otherUserName, string myIdentityId)
         {
             var userResult = await userProfileRepo.GetByUserNameAsync(otherUserName);
-            if (!userResult.IsSuccess) return Result.NotFound("User not found");
+            if (!userResult.IsSuccess) return DomainErrors.User.NotFound;
             UserId otherId = userResult.Value.Id;
             if (!(await IsAllowedToGetUserImages(otherId, myIdentityId))) return Result.Forbidden();
             List<(ImageId imgId, string key)> queryData = userResult.Value.Images.ToList().ConvertAll(x => (x.Id, x.Key));
@@ -47,7 +48,7 @@ namespace Services.Services
         public async Task<Result<string>> GetImageFilePath(ImageId id, string key)
         {
             Result<Image> imageResult = await imgRepo.GetByIdAsync(id);
-            if (!imageResult.IsSuccess) return Result.Forbidden();
+            if (!imageResult.IsSuccess) return DomainErrors.Image.NotFound;
             if (imageResult.Value.Key!=key) return Result.Forbidden();
             string path = Path.Combine(baseFilePath, $"{imageResult.Value.FileName}");
             return path;
@@ -57,15 +58,15 @@ namespace Services.Services
         {
             Result<User> userResult = await userProfileRepo.GetByIdentityAsync(identityId);
             if (userResult.IsSuccess==false)
-                return Result.NotFound($"User with identity {identityId} not found");
+                return DomainErrors.User.NotFound;
             ImageId imgId = new(Guid.NewGuid());
             Result<string> imageFileSaveResult = await SaveImageFile(imgId, imageToUpload.FileContent);
             if (!imageFileSaveResult.IsSuccess)
-                return Result.Error("Image file could not be saved");
+                return DomainErrors.Image.CouldNotSaveFile;
             string fileName = imageFileSaveResult.Value;
             Result<string> imgFileNameInsertResult = await InsertImagePath(userResult.Value.Id, imgId, fileName);
             if (!imgFileNameInsertResult.IsSuccess)
-                return Result.Error("Image path could not be saved");
+                return DomainErrors.Image.CouldNotSaveFilePath;
             return Result.Success();
         }
 
@@ -75,7 +76,7 @@ namespace Services.Services
             {
                 FileFormat? format = fileFormatInspector.DetermineFileFormat(stream);
                 if (format==null||!(format is FileSignatures.Formats.Image))
-                    return Result.Error("Wrong file format");
+                    return DomainErrors.Image.WrongFormat;
                 string fNameWithExtension = $"{id.Value}.{format.Extension}";
 
                 using (FileStream fs = File.Create($"{baseFilePath}\\{fNameWithExtension}"))
@@ -95,22 +96,22 @@ namespace Services.Services
             if (result.IsSuccess)
                 return Result.Success(fileName);
             else
-                return Result.Error("Could not insert image path to the db");
+                return DomainErrors.Image.CouldNotSaveFilePath;
         }
 
         private async Task<Result<bool>> IsAllowedToGetUserImages(UserId otherId, string myIdentityId)
         {
             Result<User> userResult = await userProfileRepo.GetByIdentityAsync(myIdentityId);
-            if (!userResult.IsSuccess) return Result.NotFound("User with provided identity id not found");
+            if (!userResult.IsSuccess) return DomainErrors.User.NotFound;
             if (otherId==userResult.Value.Id) return Result.Success(true);
 
             Result<bool> isInFriendListResult = await userProfileRepo.IsInFriendlist(userResult.Value.Id, otherId);
-            if (!isInFriendListResult.IsSuccess) return Result.Error("Couldnt check user existense in friendlist");
+            if (!isInFriendListResult.IsSuccess) return DomainErrors.Friendship.CheckFriendlist;
             if (isInFriendListResult.Value) return Result.Success(true);
 
             Result<bool> pendingFriendshipReqResult = await friendshipRequestRepository.CheckForPendingFriendshipRequestAsync(otherId,
                                                                                                                      userResult.Value.Id);
-            if (!pendingFriendshipReqResult.IsSuccess) return Result.Error("Couldnt check for pending friendship request");
+            if (!pendingFriendshipReqResult.IsSuccess) return DomainErrors.Friendship.CheckPendingRequest;
             if (pendingFriendshipReqResult.Value) return Result.Success(true);
             return Result.Success(true);
         }
