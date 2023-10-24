@@ -1,6 +1,8 @@
-﻿using Domain.Entities;
+﻿using Azure;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.Extensions.Hosting;
 
 namespace Persistence.Configurations
 {
@@ -20,7 +22,9 @@ namespace Persistence.Configurations
 
             builder.HasMany(u => u.FriendsTo)
                    .WithMany(u => u.FriendsWith)
-                   .UsingEntity(join => join.ToTable("Friendships")); 
+                   .UsingEntity<Friendship>(
+                        l => l.HasOne<User>().WithMany().HasForeignKey(e => e.UserId),
+                        r => r.HasOne<User>().WithMany().HasForeignKey(e => e.FriendId)); 
 
             builder.HasIndex(u => u.UserName)
                    .IsUnique();

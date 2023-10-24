@@ -38,7 +38,10 @@ namespace Persistence.Repo
             using (var context = contextFactory.CreateDbContext())
             {
                 DbSet<User> users = context.Set<User>();
-                User? result = await users.SingleOrDefaultAsync(x => x.AspUserIdentity == identityId);
+                User? result = await users.Include(x => x.FriendsTo)
+                    .Include(x => x.FriendsWith)
+                    .Include(x => x.Images)
+                    .SingleOrDefaultAsync(x => x.AspUserIdentity == identityId);
                 if (result == null) return Result.NotFound($"User with identity {identityId} is not found");
                 return Result.Success(result);
             }
@@ -49,9 +52,12 @@ namespace Persistence.Repo
             using (var context = contextFactory.CreateDbContext())
             {
                 DbSet<User> users = context.Set<User>();
-                User? result = await users.SingleOrDefaultAsync(x => x.UserName == userName);
-                if (result == null) return Result.NotFound($"User with name {userName} is not found");
-                return Result.Success(result);
+                User? foundUser = await users.Include(x => x.FriendsTo)
+                    .Include(x => x.FriendsWith)
+                    .Include(x => x.Images)
+                    .SingleOrDefaultAsync(x => x.UserName == userName);
+                if (foundUser == null) return Result.NotFound($"User with name {userName} is not found");
+                return Result.Success(foundUser);
             }
         }
 
@@ -60,7 +66,10 @@ namespace Persistence.Repo
             using (var context = contextFactory.CreateDbContext())
             {
                 DbSet<User> users = context.Set<User>();
-                User? result = await users.SingleOrDefaultAsync(x => x.Id == id);
+                User? result = await users.Include(x => x.FriendsTo)
+                    .Include(x => x.FriendsWith)
+                    .Include(x => x.Images)
+                    .SingleOrDefaultAsync(x => x.Id == id);
                 if (result == null) return Result.NotFound($"User not found");
                 return Result.Success(result);
             }

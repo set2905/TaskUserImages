@@ -4,6 +4,8 @@ using Domain.Entities;
 using Domain.Repo;
 using FileSignatures;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore;
 using Services.Services.Interfaces;
 using System.IO;
 
@@ -38,9 +40,8 @@ namespace Services.Services
             if (!userResult.IsSuccess) return Result.NotFound("User not found");
             UserId otherId = userResult.Value.Id;
             if (!(await IsAllowedToGetUserImages(otherId, myIdentityId))) return Result.Forbidden();
-            Result<List<(ImageId imgId, string key)>> result = await imgRepo.GetUserImageUrlsQueryData(otherId);
-            if (!result.IsSuccess) return Result.NotFound();
-            return result.Value;
+            List<(ImageId imgId, string key)> queryData = userResult.Value.Images.ToList().ConvertAll(x => (x.Id, x.Key));
+            return queryData;
         }
 
         public async Task<Result<string>> GetImageFilePath(ImageId id, string key)

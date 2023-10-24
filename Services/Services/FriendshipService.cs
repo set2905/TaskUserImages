@@ -56,6 +56,7 @@ namespace Services.Services
 
         public async Task<Result> SendFriendRequest(UserId from, UserId to)
         {
+            if(from==to) return Result.Conflict("Cant send friend request to yourself");
             Result<User> fromUserResult = await userProfileRepository.GetByIdAsync(from);
             Result<User> toUserResult = await userProfileRepository.GetByIdAsync(to);
             if (!fromUserResult.IsSuccess||!toUserResult.IsSuccess) return Result.NotFound("User not found");
@@ -64,11 +65,7 @@ namespace Services.Services
                                                                                            fromUserResult.Value.Id);
             if (incomingRequestResult.IsSuccess)
             {
-                incomingRequestResult.Value.Accept();
-                Result editResult = await friendshipRequestRepository.EditAsync(incomingRequestResult.Value);
-                if (editResult.IsSuccess)
-                    return Result.Success();
-                return Result.Error("Error accepting friend request");
+                return await incomingRequestResult.Value.Accept(friendshipRequestRepository);
             }
 
             FriendshipRequest friendshipRequest = new(new(Guid.NewGuid()), fromUserResult.Value, toUserResult.Value);

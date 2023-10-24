@@ -42,7 +42,7 @@ namespace Persistence.Repo
             }
         }
 
-        public virtual async Task<Result> EditAsync(TEntity entity, CancellationToken cancellationToken = default)
+        public virtual async Task<Result> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             using (var context = contextFactory.CreateDbContext())
             {

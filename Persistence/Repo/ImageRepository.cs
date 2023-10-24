@@ -22,14 +22,6 @@ namespace Persistence.Repo
             }
         }
 
-        public async Task<Result<List<(ImageId imgId, string key)>>> GetUserImageUrlsQueryData(UserId id)
-        {
-            using (var context = contextFactory.CreateDbContext())
-            {
-                DbSet<Image> images = context.Set<Image>();
-                var result = await images.Where(x => x.UserId == id).ToListAsync();
-                return result.ConvertAll(x => (x.Id, x.Key));
-            }
-        }
+
     }
 }

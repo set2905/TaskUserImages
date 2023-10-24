@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Repo;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace Persistence.Repo
 {
@@ -41,12 +42,23 @@ namespace Persistence.Repo
             using (var context = contextFactory.CreateDbContext())
             {
                 DbSet<FriendshipRequest> requests = context.Set<FriendshipRequest>();
-                var found = await requests.SingleOrDefaultAsync(x => x.UserId == from && x.FriendId == to);
+                var found = await requests.SingleOrDefaultAsync(x => x.UserId == from && x.FriendId == to&&!x.Accepted&&!x.Rejected&&!x.Deleted);
                 if (found==null) return Result.NotFound();
                 return Result.Success(found);
             }
         }
 
+        public async Task<Result> AddFriend(UserId userId, UserId friendId, CancellationToken cancellationToken = default)
+        {
+            using (var context = contextFactory.CreateDbContext())
+            {
+                DbSet<Friendship> friendships = context.Set<Friendship>();
+                Friendship added = new(userId, friendId);
+                context.Entry(added).State = EntityState.Added;
+                await context.SaveChangesAsync(cancellationToken);
+                return Result.Success();
+            }
+        }
         public override Task<Result<FriendshipRequest>> GetByIdAsync(FriendshipRequestId id)
         {
             throw new NotImplementedException();

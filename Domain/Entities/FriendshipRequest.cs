@@ -1,5 +1,6 @@
 ﻿using Ardalis.GuardClauses;
 using Ardalis.Result;
+using Domain.Repo;
 
 namespace Domain.Entities
 {
@@ -73,7 +74,7 @@ namespace Domain.Entities
         /// Accepts the friend request.
         /// </summary>
         /// <returns>The result of the accepting operation.</returns>
-        public Result Accept()
+        public async Task<Result> Accept(IFriendshipRequestRepository friendshipRequestRepository)
         {
             if (Accepted)
             {
@@ -85,7 +86,13 @@ namespace Domain.Entities
                 return Result.Conflict("Friendship request already rejected");
             }
             Accepted = true;
-            return Result.Success();
+            Result editResult = await friendshipRequestRepository.UpdateAsync(this);
+            if (editResult.IsSuccess)
+            {
+                await friendshipRequestRepository.AddFriend(UserId, FriendId);
+                return Result.Success();
+            }
+            return Result.Error("Error accepting friend request");
         }
 
         /// <summary>
