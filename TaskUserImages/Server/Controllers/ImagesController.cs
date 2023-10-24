@@ -36,11 +36,28 @@ namespace TaskUserImages.Server.Controllers
         [TranslateResultToActionResult]
         [HttpGet]
         [Route("userimages")]
-        public async Task<Result<List<string>>> UserImageUrls(string userName)
+        public async Task<Result<List<string>>> GetUserImageUrls(string userName)
         {
             string? identityId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (identityId == null) return Result.Error("Your user id could not be found");
             Result<List<(ImageId imgId, string key)>> result = await imageService.GetUserImageUrlsQueryData(userName, identityId);
+            if (!result.IsSuccess) return Result.Forbidden();
+            List<string> converted = result.Value.ConvertAll(x => Url.Action("GetImage",
+                                                                             "Images",
+                                                                             new { imageId = x.imgId.Value, key = x.key },
+                                                                             protocol: Request.Scheme)??"");
+            return Result.Success(converted);
+        }
+
+        [Authorize]
+        [TranslateResultToActionResult]
+        [HttpGet]
+        [Route("myimages")]
+        public async Task<Result<List<string>>> GetMyImageUrls()
+        {
+            string? identityId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (identityId == null) return Result.Error("Your user id could not be found");
+            Result<List<(ImageId imgId, string key)>> result = await imageService.GetUserImageUrlsQueryData(identityId);
             if (!result.IsSuccess) return Result.Forbidden();
             List<string> converted = result.Value.ConvertAll(x => Url.Action("GetImage",
                                                                              "Images",

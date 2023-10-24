@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Services.Services.Interfaces;
 using System.IO;
 using Domain.Errors;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace Services.Services
 {
@@ -37,12 +38,19 @@ namespace Services.Services
 
         public async Task<Result<List<(ImageId imgId, string key)>>> GetUserImageUrlsQueryData(string otherUserName, string myIdentityId)
         {
-            var userResult = await userProfileRepo.GetByUserNameAsync(otherUserName);
+            var otherResult = await userProfileRepo.GetByUserNameAsync(otherUserName);
+            if (!otherResult.IsSuccess) return DomainErrors.User.NotFound;
+            var userResult = await userProfileRepo.GetByIdentityAsync(myIdentityId);
             if (!userResult.IsSuccess) return DomainErrors.User.NotFound;
-            UserId otherId = userResult.Value.Id;
-            if (!(await IsAllowedToGetUserImages(otherId, myIdentityId))) return Result.Forbidden();
-            List<(ImageId imgId, string key)> queryData = userResult.Value.Images.ToList().ConvertAll(x => (x.Id, x.Key));
-            return queryData;
+            return await GetImageUrlsQueryData(otherResult.Value, userResult.Value);
+
+        }
+
+        public async Task<Result<List<(ImageId imgId, string key)>>> GetUserImageUrlsQueryData(string myIdentityId)
+        {
+            var userResult = await userProfileRepo.GetByIdentityAsync(myIdentityId);
+            if (!userResult.IsSuccess) return DomainErrors.User.NotFound;
+            return await GetImageUrlsQueryData(userResult.Value, userResult.Value);
         }
 
         public async Task<Result<string>> GetImageFilePath(ImageId id, string key)
@@ -70,6 +78,12 @@ namespace Services.Services
             return Result.Success();
         }
 
+        private async Task<Result<List<(ImageId imgId, string key)>>> GetImageUrlsQueryData(User other, User me)
+        {
+            if (!(await IsAllowedToGetUserImages(other.Id, me))) return Result.Forbidden();
+            List<(ImageId imgId, string key)> queryData = other.Images.ToList().ConvertAll(x => (x.Id, x.Key));
+            return Result.Success(queryData);
+        }
         private async Task<Result<string>> SaveImageFile(ImageId id, byte[] content)
         {
             using (MemoryStream stream = new(content))
@@ -99,18 +113,16 @@ namespace Services.Services
                 return DomainErrors.Image.CouldNotSaveFilePath;
         }
 
-        private async Task<Result<bool>> IsAllowedToGetUserImages(UserId otherId, string myIdentityId)
+        private async Task<Result<bool>> IsAllowedToGetUserImages(UserId otherId, User user)
         {
-            Result<User> userResult = await userProfileRepo.GetByIdentityAsync(myIdentityId);
-            if (!userResult.IsSuccess) return DomainErrors.User.NotFound;
-            if (otherId==userResult.Value.Id) return Result.Success(true);
+            if (otherId==user.Id) return Result.Success(true);
 
-            Result<bool> isInFriendListResult = await userProfileRepo.IsInFriendlist(userResult.Value.Id, otherId);
+            Result<bool> isInFriendListResult = await userProfileRepo.IsInFriendlist(user.Id, otherId);
             if (!isInFriendListResult.IsSuccess) return DomainErrors.Friendship.CheckFriendlist;
             if (isInFriendListResult.Value) return Result.Success(true);
 
             Result<bool> pendingFriendshipReqResult = await friendshipRequestRepository.CheckForPendingFriendshipRequestAsync(otherId,
-                                                                                                                     userResult.Value.Id);
+                                                                                                                     user.Id);
             if (!pendingFriendshipReqResult.IsSuccess) return DomainErrors.Friendship.CheckPendingRequest;
             if (pendingFriendshipReqResult.Value) return Result.Success(true);
             return Result.Success(true);
