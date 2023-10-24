@@ -18,7 +18,8 @@ namespace Domain.Errors
         public static class Friendship
         {
             public static Result CheckFriendlist => Result.Error("Couldnt check user existense in friendlist");
-            public static Result CheckPendingRequest => Result.Error("Couldnt check for pending friendship request");;
+            public static Result CheckPendingRequest => Result.Error("Couldnt check for pending friendship request");
+            public static Result RequestSentToSelf => Result.Conflict("Cant send friend request to yourself");
 
         }
         public static class Image

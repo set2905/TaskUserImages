@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using Domain.Entities;
+using Domain.Errors;
 using Domain.Repo;
 using Services.Services.Interfaces;
 
@@ -25,7 +26,7 @@ namespace Services.Services
         {
             var userResult = await userProfileRepository.GetByIdentityAsync(fromIdentity);
             var friendResult = await userProfileRepository.GetByUserNameAsync(toName);
-            if (!userResult.IsSuccess||!friendResult.IsSuccess) return Result.NotFound("User not found");
+            if (!userResult.IsSuccess||!friendResult.IsSuccess) return DomainErrors.User.NotFound;
             return await friendshipRequestRepository.CheckForPendingFriendshipRequestAsync(userResult.Value.Id, friendResult.Value.Id);
         }
 
@@ -33,7 +34,7 @@ namespace Services.Services
         {
             var userResult = await userProfileRepository.GetByIdentityAsync(userIdentity);
             var friendResult = await userProfileRepository.GetByUserNameAsync(friendName);
-            if (!userResult.IsSuccess||!friendResult.IsSuccess) return Result.NotFound("User not found");
+            if (!userResult.IsSuccess||!friendResult.IsSuccess) return DomainErrors.User.NotFound;
             return await userProfileRepository.IsInFriendlist(userResult.Value.Id, friendResult.Value.Id);
         }
 
@@ -45,7 +46,7 @@ namespace Services.Services
         public async Task<Result<List<FriendshipRequest>>> GetIncomingFriendshipRequests(string identityId, int skip, int take)
         {
             var userResult = await userProfileRepository.GetByIdentityAsync(identityId);
-            if (!userResult.IsSuccess) return Result.NotFound("User not found");
+            if (!userResult.IsSuccess) return DomainErrors.User.NotFound;
             return await GetIncomingFriendshipRequests(userResult.Value.Id, skip, take);
         }
 
@@ -56,10 +57,10 @@ namespace Services.Services
 
         public async Task<Result> SendFriendRequest(UserId from, UserId to)
         {
-            if(from==to) return Result.Conflict("Cant send friend request to yourself");
+            if (from==to) return DomainErrors.Friendship.RequestSentToSelf;
             Result<User> fromUserResult = await userProfileRepository.GetByIdAsync(from);
             Result<User> toUserResult = await userProfileRepository.GetByIdAsync(to);
-            if (!fromUserResult.IsSuccess||!toUserResult.IsSuccess) return Result.NotFound("User not found");
+            if (!fromUserResult.IsSuccess||!toUserResult.IsSuccess) return DomainErrors.User.NotFound;
 
             Result<FriendshipRequest> incomingRequestResult = await friendshipRequestRepository.FindFriendRequestAsync(toUserResult.Value.Id,
                                                                                            fromUserResult.Value.Id);
@@ -76,7 +77,7 @@ namespace Services.Services
         {
             var userResult = await userProfileRepository.GetByIdentityAsync(fromIdentity);
             var friendResult = await userProfileRepository.GetByUserNameAsync(toUserName);
-            if (!userResult.IsSuccess||!friendResult.IsSuccess) return Result.NotFound("User not found");
+            if (!userResult.IsSuccess||!friendResult.IsSuccess) return DomainErrors.User.NotFound;
             return await SendFriendRequest(userResult.Value.Id, friendResult.Value.Id);
         }
     }

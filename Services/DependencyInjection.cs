@@ -15,15 +15,15 @@ namespace Services
             IEnumerable<Image> recognised = FileFormatLocator.GetFormats().OfType<Image>();
             FileFormatInspector inspector = new FileFormatInspector(recognised);
             services.AddSingleton<IFileFormatInspector>(inspector);
-
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFriendshipService, FriendshipService>();
-            services.AddScoped<IImageService, ImageService>(pv => new("C:\\Users\\user\\Downloads",
+            string imgPath = configuration.GetValue<string>("ImageDirectory")
+                ?? throw new Exception("Please, add ImageDirectory to appsetings.json");
+            services.AddScoped<IImageService, ImageService>(pv => new(imgPath,
                                                                     pv.GetService<IImageRepository>()!,
                                                                     pv.GetService<IUserProfileRepository>()!,
                                                                     pv.GetService<IFileFormatInspector>()!,
                                                                     pv.GetService<IFriendshipRequestRepository>()!));
-
             return services;
         }
     }

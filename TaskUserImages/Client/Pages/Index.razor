@@ -22,12 +22,13 @@ Welcome to your new app.
 @code
 {
     private List<UserDto> users = new();
+    private int currentPage = 1;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            users = await api.GetUserProfiles(1, 10);
+            users = await api.GetUserProfiles(currentPage);
             StateHasChanged();
         }
     }
