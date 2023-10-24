@@ -8,7 +8,7 @@ namespace Contracts.Dto
 {
     public class FriendRequestDto
     {
-        public Guid FromUserId { get; set; }
+        public string FromUsername { get; set; }
         public Guid Id { get; set; }
     }
 }

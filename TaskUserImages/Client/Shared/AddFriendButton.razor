@@ -1,0 +1,33 @@
+﻿@using TaskUserImages.Client.API;
+@inject IImageFriendsAPI api
+
+
+<MudIconButton Disabled="@sendingFriendRequest" Variant="Variant.Filled" Icon="@Icons.Material.Filled.PersonAdd" Color="Color.Success" OnClick="SendFriendRequest">
+    @if (sendingFriendRequest)
+    {
+        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+        <MudText Class="ms-2">Processing</MudText>
+    }
+    else
+    {
+        <MudText>Add friend</MudText>
+    }
+</MudIconButton>
+
+@code {
+    [Parameter]
+    public string Username { get; set; } = string.Empty;
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnRequestSent { get; set; }
+    public bool sendingFriendRequest = false;
+
+
+    private async Task SendFriendRequest()
+    {
+        if (Username.Length == 0) return;
+        sendingFriendRequest = true;
+        await api.AddFriend(Username);
+        sendingFriendRequest = false;
+        await OnRequestSent.InvokeAsync();
+    }
+}

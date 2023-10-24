@@ -17,22 +17,12 @@
         <MudImage Height="100" Src="@img" />
     }
 }
-@if (isFriend==false&&isRequestPending==false)
+@if (isFriend==false&&isFriendRequestPending==false)
 {
+    <AddFriendButton Username="@UserName" OnRequestSent="@InitializeFriend" />
 
-    <MudIconButton Disabled="@sendingFriendRequest" Variant="Variant.Filled" Icon="@Icons.Material.Filled.PersonAdd" Color="Color.Success" OnClick="SendFriendRequest">
-        @if (sendingFriendRequest)
-        {
-            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-            <MudText Class="ms-2">Processing</MudText>
-        }
-        else
-        {
-            <MudText>Add friend</MudText>
-        }
-    </MudIconButton>
 }
-@if (isRequestPending == true)
+@if (isFriendRequestPending == true)
 {
     <MudText>
         You sent friend request to this user
@@ -43,8 +33,7 @@
     [Parameter]
     public string UserName { get; set; } = string.Empty;
     public bool? isFriend;
-    public bool? isRequestPending;
-    public bool sendingFriendRequest = false;
+    public bool? isFriendRequestPending;
     private List<string> existingImages = new();
 
 
@@ -57,22 +46,13 @@
     private async Task InitializeFriend()
     {
         if (UserName == null) return;
-        isRequestPending = await api.IsRequestPending(UserName);
-        if (isRequestPending==false)
+        isFriendRequestPending = await api.IsRequestPending(UserName);
+        if (isFriendRequestPending==false)
         {
             isFriend = await api.IsFriend(UserName);
             if (isFriend==true)
                 existingImages = await api.GetUserImageUrls(UserName);
         }
-    }
-
-    private async Task SendFriendRequest()
-    {
-        if (UserName.Length == 0||isRequestPending==true) return;
-        sendingFriendRequest = true;
-        await api.AddFriend(UserName);
-        sendingFriendRequest = false;
-        await InitializeFriend();
     }
 }
 

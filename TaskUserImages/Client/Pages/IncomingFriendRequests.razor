@@ -1,11 +1,16 @@
-﻿@using Contracts.Dto;
+﻿@page "/Profile/FriendRequests"
+
+@using Contracts.Dto;
 @using TaskUserImages.Client.API;
 @inject IImageFriendsAPI api;
 <PageTitle>Incoming friend requests</PageTitle>
 <MudList>
-    @foreach(var request in incoming)
+    @foreach (var request in incoming)
     {
-      //  name!!!
+        <MudText>
+            @request.FromUsername wants to add you as a friend!
+        </MudText>
+        <AddFriendButton Username="@request.FromUsername" />
     }
 </MudList>
 
@@ -15,6 +20,10 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-        incoming = await api.GetIncomingFriendRequests(currentPage);
+        if (firstRender)
+        {
+            incoming = await api.GetIncomingFriendRequests(currentPage);
+            StateHasChanged();
+        }
     }
 }

@@ -43,7 +43,7 @@ namespace Persistence.Migrations
                     b.Property<Guid>("FriendId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("FriendUsername")
+                    b.Property<string>("FromUsername")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -61,7 +61,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("FriendshipRequest");
+                    b.ToTable("FriendshipRequest", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Image", b =>
@@ -87,7 +87,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Image");
+                    b.ToTable("Image", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -111,7 +111,7 @@ namespace Persistence.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("UserUser", b =>

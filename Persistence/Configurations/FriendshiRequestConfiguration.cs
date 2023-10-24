@@ -36,7 +36,7 @@ namespace Persistence.Configurations
             builder.Property(friendshipRequest => friendshipRequest.Rejected).HasDefaultValue(false);
 
             builder.Property(friendshipRequest => friendshipRequest.DeletedOnUtc);
-            builder.Property(friendshipRequest => friendshipRequest.FriendUsername);
+            builder.Property(friendshipRequest => friendshipRequest.FromUsername).HasColumnName("FromUsername");
 
             builder.Property(friendshipRequest => friendshipRequest.Deleted).HasDefaultValue(false);
 

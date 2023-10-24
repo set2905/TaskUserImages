@@ -46,7 +46,7 @@ namespace Persistence.Migrations
                     b.Property<Guid>("FriendId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("FriendUsername")
+                    b.Property<string>("FromUsername")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

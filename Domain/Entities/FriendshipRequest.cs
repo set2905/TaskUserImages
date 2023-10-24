@@ -23,8 +23,7 @@ namespace Domain.Entities
             UserId = user.Id;
             FriendId = friend.Id;
             Id = id;
-            FriendUsername=friend.UserName;
-
+            FromUsername=user.UserName;
         }
 
         /// <summary>
@@ -50,9 +49,9 @@ namespace Domain.Entities
         /// </summary>
         public UserId FriendId { get; private set; }
         /// <summary>
-        /// Gets the friend username.
+        /// Gets the from username.
         /// </summary>
-        public string FriendUsername { get; private set; }
+        public string FromUsername { get; private set; }
 
         /// <summary>
         /// Gets the value indicating whether or not the friend request has been accepted.

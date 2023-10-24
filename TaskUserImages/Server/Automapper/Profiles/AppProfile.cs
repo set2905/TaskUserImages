@@ -10,8 +10,16 @@ namespace TaskUserImages.Server.Automapper.Profiles
         {
             CreateMap<User, UserDto>();
             CreateMap<FriendshipRequest, FriendRequestDto>()
-                .ForMember(x => nameof(x.Id), opt => opt.MapFrom(src => src.Id.Value))
-                .ForMember(x => nameof(x.FromUserId), opt => opt.MapFrom(src => src.UserId.Value));
+                .ForMember(x => x.Id, opt => opt.MapFrom<FriendRequestIdValueResolver>());
         }
     }
+
+    public class FriendRequestIdValueResolver : IValueResolver<FriendshipRequest, FriendRequestDto, Guid>
+    {
+        public Guid Resolve(FriendshipRequest source, FriendRequestDto destination, Guid destMember, ResolutionContext context)
+        {
+            return source.Id.Value;
+        }
+    }
+
 }

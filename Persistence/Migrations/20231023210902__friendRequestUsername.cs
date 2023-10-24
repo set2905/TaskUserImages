@@ -11,7 +11,7 @@ namespace Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "FriendUsername",
+                name: "FromUsername",
                 table: "FriendshipRequest",
                 type: "nvarchar(max)",
                 nullable: false,
@@ -22,7 +22,7 @@ namespace Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "FriendUsername",
+                name: "FromUsername",
                 table: "FriendshipRequest");
         }
     }
